@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1446240852 source:/home/lewis/Gitlab/LushSurface/LushSurface/main.cpp
+	<iostream>
+
+1446242031 source:/home/lewis/Gitlab/LushSurface/LushSurface/simplexnoise.cpp
+	<cmath>
+	"simplexnoise.hpp"
+
+1446242155 /home/lewis/Gitlab/LushSurface/LushSurface/simplexnoise.hpp
+

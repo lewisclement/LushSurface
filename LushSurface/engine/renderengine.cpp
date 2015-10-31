@@ -40,7 +40,7 @@ bool RenderEngine::initializeGL() {
         std::cout << "Could not enable double buffering: " << bufferError << ":" << bufferDepthError << std::endl;
     }
 
-    screen = SDL_CreateWindow ("LushSurface experiment 4",
+    screen = SDL_CreateWindow ("LushSurface Milestone 1 dev",
                           SDL_WINDOWPOS_CENTERED,
                           SDL_WINDOWPOS_CENTERED,
                           (int)windowWidth, (int)windowHeight,
@@ -67,7 +67,7 @@ bool RenderEngine::initializeGL() {
     glEnable(GL_DEPTH_TEST);
 
     SDL_GL_SetSwapInterval(1);
-    //SDL_SetRelativeMouseMode(SDL_TRUE);
+    SDL_SetRelativeMouseMode(SDL_TRUE);
 
     return true;
 }

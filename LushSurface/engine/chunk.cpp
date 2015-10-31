@@ -1,7 +1,7 @@
 #include "world.hpp"
 
-Chunk::Chunk(SimplexNoise *noiseGenerator) {
-    this->generator = noiseGenerator;
+Chunk::Chunk(SimplexNoise *Generator) {
+    this->generator = Generator;
 }
 
 Chunk::~Chunk() {
@@ -19,49 +19,6 @@ Chunk::~Chunk() {
 void Chunk::bindVBO() {
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-    if(!loadingDone) {
-        const GLulong currentTime = SDL_GetTicks();
-        const GLint deltaTime = (GLint)(currentTime - loadTick);
-        const GLint totalTime = (GLint)(currentTime - startLoadTick);
-
-        if(totalTime >= loadingAnimationTerrainDuration) {
-            unsigned long i = 1, pos = 0;
-            while(i < vertices.size()) {
-                vertices[i] = blockHeights[pos];
-                vertices[i+6] = blockHeights[pos];
-                vertices[i+12] = blockHeights[pos];
-                vertices[i+18] = blockHeights[pos];
-                vertices[i+24] = blockHeights[pos];
-                vertices[i+30] = blockHeights[pos];
-                i += 36;
-
-                for(int y = 0; y < 4; y++) {
-                    vertices[i] = blockHeights[pos];
-                    vertices[i+6] = blockHeights[pos];
-                    vertices[i+12] = blockHeights[pos] - 1;
-                    vertices[i+18] = blockHeights[pos];
-                    vertices[i+24] = blockHeights[pos] - 1;
-                    vertices[i+30] = blockHeights[pos] - 1;
-                    i += 36;
-                }
-
-                pos++;
-            }
-
-            loadingDone = true;
-        } else {
-            unsigned long i = 1;
-            while(i < vertices.size()) {
-                vertices[i] = GLfloat(vertices[i] + deltaTime * (loadingAnimationHeight / (float)loadingAnimationTerrainDuration));
-
-                i += 6;
-            }
-        }
-
-        loadTick = currentTime;
-        glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(GLfloat), &vertices[0]);
-    }
 }
 
 Coordinate Chunk::getPosition() {
@@ -90,7 +47,7 @@ void Chunk::initialize(int32_t x, int32_t y) {
         worldHeightDataUpper.clear();
 
         loaded = false;
-        triangleCount = 0;
+        pointCount = 0;
     }
 
     xPos = x;
@@ -119,8 +76,8 @@ void Chunk::initialize(int32_t x, int32_t y) {
             worldHeightDataUpper[i][j] = (uint16_t)std::min(generator->scaled_raw_noise_2d(17, 35, (i + xPos * chunkSize) / 100.0f, (j + yPos * chunkSize) / 100.0f), float(worldHeightDataUpper[i][j]));
             worldHeightDataLower[i].push_back(uint16_t(generator->scaled_raw_noise_2d(12, worldHeightDataUpper[i][j] - 1, (i + xPos * chunkSize) / 10.0f, (j + yPos * chunkSize) / 10.0f)));
 
-            bool hole = int(generator->scaled_raw_noise_2d(0, 5, (i + xPos * chunkSize) / 80.0f, (j + yPos * chunkSize) / 80.0f)) % 2 == 0;
-            //hole = int(scaled_raw_noise_2d(0, 3, (i + xPos * chunkSize) / 80.0f, (j + yPos * chunkSize) / 80.0f)) % 2 == 0;
+            bool hole = int(generator->scaled_raw_noise_2d(0, 5, (i + xPos * chunkSize) / 80.0f, (j + yPos * chunkSize) / 80.0f)) % 3 == 0;
+            //hole = int(generator->scaled_raw_noise_2d(0, 3, (i + xPos * chunkSize) / 80.0f, (j + yPos * chunkSize) / 80.0f)) % 2 == 0;
             if(hole) worldHeightDataUpper[i][j] = 0;
         }
     }
@@ -128,7 +85,7 @@ void Chunk::initialize(int32_t x, int32_t y) {
     for(uint16_t i = 0; i < chunkSize; i++) {
         for(uint16_t j = 0; j < chunkSize; j++) {
             for(uint16_t k = worldHeightDataLower[i][j]; k <= worldHeightDataUpper[i][j]; k++) {
-                addCube(i, k - loadingAnimationHeight, j);
+                addCube(i, k, j);
                 blockHeights.push_back(k);
             }
         }
@@ -136,8 +93,6 @@ void Chunk::initialize(int32_t x, int32_t y) {
 
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_DYNAMIC_DRAW);
 
-    startLoadTick = loadTick = SDL_GetTicks();
-    loadingDone = false;
     loaded = true;
 }
 
@@ -183,7 +138,7 @@ void Chunk::addCube(uint16_t x, uint16_t y, uint16_t z) {
     vertices.push_back(0.0f);
     vertices.push_back(1.0f);
     vertices.push_back(0.0f);
-    triangleCount += 6;
+    pointCount += 6;
 
 
     vertices.push_back((GLfloat)x - 0.5f);
@@ -227,7 +182,7 @@ void Chunk::addCube(uint16_t x, uint16_t y, uint16_t z) {
     vertices.push_back(0.0f);
     vertices.push_back(0.0f);
     vertices.push_back(1.0f);
-    triangleCount += 6;
+    pointCount += 6;
 
 
     vertices.push_back((GLfloat)x - 0.5f);
@@ -271,7 +226,7 @@ void Chunk::addCube(uint16_t x, uint16_t y, uint16_t z) {
     vertices.push_back(0.0f);
     vertices.push_back(0.0f);
     vertices.push_back(-1.0f);
-    triangleCount += 6;
+    pointCount += 6;
 
 
     vertices.push_back((GLfloat)x - 0.5f);
@@ -315,7 +270,7 @@ void Chunk::addCube(uint16_t x, uint16_t y, uint16_t z) {
     vertices.push_back(-1.0f);
     vertices.push_back(0.0f);
     vertices.push_back(0.0f);
-    triangleCount += 6;
+    pointCount += 6;
 
 
     vertices.push_back((GLfloat)x + 0.5f);
@@ -359,11 +314,11 @@ void Chunk::addCube(uint16_t x, uint16_t y, uint16_t z) {
     vertices.push_back(1.0f);
     vertices.push_back(0.0f);
     vertices.push_back(0.0f);
-    triangleCount += 6;
+    pointCount += 6;
 }
 
 GLint Chunk::getTriangleCount() {
-    return triangleCount;
+    return pointCount;
 }
 
 bool Chunk::isLoaded() {

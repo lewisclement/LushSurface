@@ -3,7 +3,7 @@
 #include "engine/renderengine.hpp"
 
 static RenderEngine* renderer;
-static GLulong frameCount = 1;
+static GLulong frameCount = 0;
 static GLuint frameRate = 60;
 
 int main() {

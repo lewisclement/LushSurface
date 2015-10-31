@@ -23,7 +23,7 @@ struct TerrainColumn {
 
 class Chunk{
 public:
-    Chunk(SimplexNoise *noiseGenerator);
+    Chunk(SimplexNoise *Generator);
     ~Chunk();
 
     void initialize(int32_t x, int32_t y);
@@ -46,9 +46,8 @@ private:
     std::vector<uint16_t> blockHeights;
 
     GLuint VAO = 0, VBO = 0;
-    GLint triangleCount = 0;
-    GLulong startLoadTick = 0, loadTick = 0;
-    bool loaded = false, loadingDone = false;
+    GLint pointCount = 0;
+    bool loaded = false;
     SimplexNoise *generator = NULL;
 };
 

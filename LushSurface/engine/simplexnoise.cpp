@@ -2,7 +2,15 @@
 #include "simplexnoise.hpp"
 
 SimplexNoise::SimplexNoise() {
+    for(int i = 0; i < 512; i++) {
+        perm[i] = rand() % 255 + 1;
+    }
 
+    for(int i = 0; i < 12; i++) {
+        grad3[i][0] = rand() % 3 - 1;
+        grad3[i][1] = rand() % 3 - 1;
+        grad3[i][2] = rand() % 3 - 1;
+    }
 }
 
 SimplexNoise::~SimplexNoise() {
@@ -16,7 +24,6 @@ void SimplexNoise::setSeed(unsigned int seed) {
         perm[i] = rand() % 255 + 1;
     }
 
-    ////Check if this gets the right results
     for(int i = 0; i < 12; i++) {
         grad3[i][0] = rand() % 3 - 1;
         grad3[i][1] = rand() % 3 - 1;

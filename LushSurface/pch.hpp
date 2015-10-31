@@ -11,6 +11,7 @@
 #include <cmath>
 #include <string>
 #include <algorithm>
+#include <unordered_set>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>

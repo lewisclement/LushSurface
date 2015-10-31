@@ -23,7 +23,7 @@ struct TerrainColumn {
 
 class Chunk{
 public:
-    Chunk();
+    Chunk(SimplexNoise *noiseGenerator);
     ~Chunk();
 
     void initialize(int32_t x, int32_t y);
@@ -39,8 +39,8 @@ public:
 
 private:
     int32_t xPos, yPos;
-    std::vector<std::vector<uint16_t>> worldHeightDataLower;
-    std::vector<std::vector<uint16_t>> worldHeightDataUpper;
+    std::vector<std::vector<uint16_t> > worldHeightDataLower;
+    std::vector<std::vector<uint16_t> > worldHeightDataUpper;
 
     std::vector<GLfloat> vertices;
     std::vector<uint16_t> blockHeights;
@@ -49,6 +49,7 @@ private:
     GLint triangleCount = 0;
     GLulong startLoadTick = 0, loadTick = 0;
     bool loaded = false, loadingDone = false;
+    SimplexNoise *generator = NULL;
 };
 
 class World{
@@ -65,6 +66,7 @@ public:
 
 private:
     std::vector<Chunk*> chunks;
+    SimplexNoise *generator = NULL;
 };
 
 #endif // WORLD_H

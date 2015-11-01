@@ -1,5 +1,7 @@
+#ifndef ENTITY_H
+#define ENTITY_H
+
 #include "../pch.hpp"
-#include "../geometry.hpp"
 
 class Entity {
 public:
@@ -8,5 +10,7 @@ public:
 
 private:
     unsigned long ID = 0;
-    Point location;
+    glm::dvec3 location;
 };
+
+#endif

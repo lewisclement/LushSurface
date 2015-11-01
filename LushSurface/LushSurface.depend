@@ -474,13 +474,14 @@
 	"../trigonometric.hpp"
 	"../matrix.hpp"
 
-1446305053 source:/home/lewis/Gitlab/LushSurface/LushSurface/engine/renderengine.cpp
+1446384862 source:/home/lewis/Gitlab/LushSurface/LushSurface/engine/renderengine.cpp
 	"renderengine.hpp"
 
-1446290802 /home/lewis/Gitlab/LushSurface/LushSurface/engine/renderengine.hpp
+1446382178 /home/lewis/Gitlab/LushSurface/LushSurface/engine/renderengine.hpp
 	"../pch.hpp"
 	"shader.hpp"
 	"world.hpp"
+	"view.hpp"
 
 1446290807 /home/lewis/Gitlab/LushSurface/LushSurface/engine/shader.hpp
 	"../pch.hpp"
@@ -507,20 +508,25 @@
 1446328348 source:/home/lewis/Gitlab/LushSurface/LushSurface/engine/entity.cpp
 	"entity.hpp"
 
-1446328346 /home/lewis/Gitlab/LushSurface/LushSurface/engine/entity.hpp
+1446379569 /home/lewis/Gitlab/LushSurface/LushSurface/engine/entity.hpp
 	"../pch.hpp"
-	"../geometry.hpp"
 
 1446325891 source:/home/lewis/Gitlab/LushSurface/LushSurface/engine/entityset.cpp
 	"entityset.hpp"
 
-1446326125 /home/lewis/Gitlab/LushSurface/LushSurface/engine/entityset.hpp
+1446378670 /home/lewis/Gitlab/LushSurface/LushSurface/engine/entityset.hpp
 	"../pch.hpp"
 	"entity.hpp"
 
 1446327343 source:/home/lewis/Gitlab/LushSurface/LushSurface/geometry.cpp
 	"geometry.hpp"
 
-1446328680 /home/lewis/Gitlab/LushSurface/LushSurface/geometry.hpp
+1446378684 /home/lewis/Gitlab/LushSurface/LushSurface/geometry.hpp
 	"pch.hpp"
+
+1446383424 source:/home/lewis/Gitlab/LushSurface/LushSurface/engine/view.cpp
+	"view.hpp"
+
+1446383539 /home/lewis/Gitlab/LushSurface/LushSurface/engine/view.hpp
+	"../pch.hpp"
 

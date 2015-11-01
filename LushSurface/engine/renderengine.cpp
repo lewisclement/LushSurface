@@ -6,6 +6,8 @@ bool RenderEngine::initialize(GLuint width, GLuint height) {
     windowWidth = width;
     windowHeight = height;
 
+    view = new View();
+
     if(!initializeGL()) {
         std::cout << "Could not initialize OpenGL window" << std::endl;
         return false;
@@ -120,6 +122,7 @@ bool RenderEngine::initializeScene() {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     //glGenBuffers(1, &EBO);
+    glm::vec3 cameraPos = view->getCameraPos();
     world = new World(cameraPos.x - chunkSize / 2, cameraPos.z + chunkSize / 2);
     glBindVertexArray(VAO);
 
@@ -142,9 +145,6 @@ bool RenderEngine::initializeScene() {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
-
-
-    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 
     //projection = glm::perspective(45.0f, (GLfloat)windowWidth / windowHeight, 0.1f, 1000.0f);
     projection = glm::ortho(0.0f, 24.0f, 0.0f, 13.5f, 0.1f, 100.0f);
@@ -205,6 +205,8 @@ bool RenderEngine::initializeScene() {
 }
 
 void RenderEngine::mouseInput(GLint relX, GLint relY) {
+    //For testing purposes
+    /*
     if(!(SDL_GetWindowFlags(screen) & SDL_WINDOW_MOUSE_FOCUS)) return;
 
     yaw += relX / 10.0f;
@@ -218,6 +220,7 @@ void RenderEngine::mouseInput(GLint relX, GLint relY) {
     front.y = float(sin(glm::radians(pitch)));
     front.z = float(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
     cameraFront = glm::normalize(front);
+    */
 }
 
 void RenderEngine::keyInput(SDL_KeyboardEvent key) {
@@ -237,19 +240,18 @@ void RenderEngine::processInput(GLuint deltaTime) {
     GLfloat cameraSpeed = 0.03f * deltaTime;
 
     if(down) {
-        cameraPos -= cameraSpeed * glm::vec3(1.0f, 0.0f, 1.0f);
-        //cameraPos -= cameraSpeed * cameraFront;
+        view->moveCamera(0, cameraSpeed);
     }
     if(up) {
-        cameraPos += cameraSpeed * glm::vec3(1.0f, 0.0f, 1.0f);
-        //cameraPos += cameraSpeed * cameraFront;
+        view->moveCamera(1, cameraSpeed);
     }
     if(right) {
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        view->moveCamera(2, cameraSpeed);
     }
     if(left) {
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        view->moveCamera(3, cameraSpeed);
     }
+    glm::vec3 cameraPos = view->getCameraPos();
     world->loadTerrain(cameraPos.x, cameraPos.z + chunkSize / 2);
 }
 
@@ -322,6 +324,8 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
     GLint spotLightLinearLoc = glGetUniformLocation(lightingShader->programID, "spot.linear");
     GLint spotLightQuadraticLoc = glGetUniformLocation(lightingShader->programID, "spot.quadratic");
 
+    glm::vec3 cameraPos = view->getCameraPos();
+    glm::vec3 cameraFront = view->getCameraFront();
     glUniform3f(spotLightPosLoc, cameraPos.x, cameraPos.y, cameraPos.z);
     glUniform3f(spotLightSpotdirLoc, cameraFront.x, cameraFront.y, cameraFront.z);
     glUniform1f(spotLightSpotCutOffLoc, glm::cos(glm::radians(12.5f)));
@@ -342,9 +346,8 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
     glUniform3f(viewPosLoc, cameraPos.x, cameraPos.y, cameraPos.z);
 
     GLint modelLocation = glGetUniformLocation(lightingShader->programID, "model");
-    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
     GLint viewLocation = glGetUniformLocation(lightingShader->programID, "view");
-    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view->getViewMatrix()));
     GLint projectionLocation = glGetUniformLocation(lightingShader->programID, "projection");
     glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -366,7 +369,7 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
     lampShader->activate();
     viewLocation = glGetUniformLocation(lampShader->programID, "view");
     projectionLocation = glGetUniformLocation(lampShader->programID, "projection");
-    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view->getViewMatrix()));
     glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -397,4 +400,7 @@ RenderEngine::RenderEngine() {
 RenderEngine::~RenderEngine() {
     delete[] textures;
     delete world;
+    delete view;
+    delete lightingShader;
+    delete lampShader;
 }

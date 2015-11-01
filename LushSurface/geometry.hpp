@@ -1,3 +1,5 @@
+#ifndef GEOMETRY_H
+#define GEOMETRY_H
 #include "pch.hpp"
 
 class Point {
@@ -37,3 +39,5 @@ public:
 private:
     double X = 0.0, Y = 0.0;
 };
+
+#endif

@@ -1,9 +1,10 @@
+#ifndef RENDERENGINE_H
+#define RENDERENGINE_H
+
 #include "../pch.hpp"
 #include "shader.hpp"
 #include "world.hpp"
-
-#ifndef RENDERENGINE_H
-#define RENDERENGINE_H
+#include "view.hpp"
 
 #pragma clang diagnostic ignored "-Wpadded"
 
@@ -43,14 +44,11 @@ private:
     GLuint VAO, lightVAO; //VAO's
     GLuint VBO; //VBO's
 
-    glm::vec3 cameraPos   = glm::vec3(0.0f, 30.0f,  3.0f);
-    glm::vec3 cameraFront = glm::vec3(3.0f, -3.0f, 3.0f);
-    glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
-
     glm::mat4 trans;
     glm::mat4 model;
-    glm::mat4 view;
     glm::mat4 projection;
+
+    View *view;
 };
 
 #endif // RENDERENGINE_H

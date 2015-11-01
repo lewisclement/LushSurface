@@ -20,6 +20,8 @@ public:
     void keyInput(SDL_KeyboardEvent key);
     void processInput(GLuint deltaTime);
 
+    View getView();
+
     RenderEngine();
     ~RenderEngine();
 
@@ -46,7 +48,6 @@ private:
 
     glm::mat4 trans;
     glm::mat4 model;
-    glm::mat4 projection;
 
     View *view;
 };

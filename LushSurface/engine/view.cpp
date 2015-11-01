@@ -1,12 +1,22 @@
 #include "view.hpp"
 
 View::View() {
-
+    projection = glm::ortho(0.0f, 24.0f, 0.0f, 13.5f, 0.1f, 100.0f);
+    currentProjection = strategic;
 }
-
 
 View::~View() {
 
+}
+
+void View::setProjection(Projection p) {
+    if(p == strategic) {
+        projection = glm::ortho(0.0f, 24.0f, 0.0f, 13.5f, 0.1f, 100.0f);
+        currentProjection = strategic;
+    } else if(p == birdseye) {
+        projection = glm::perspective(45.0f, (GLfloat)1280 / 720, 0.1f, 1000.0f);
+        currentProjection = birdseye;
+    }
 }
 
 glm::vec3 View::getCameraPos() {
@@ -19,6 +29,14 @@ glm::vec3 View::getCameraFront() {
 
 glm::mat4 View::getViewMatrix() {
     return glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+}
+
+glm::mat4 View::getProjectionMatrix() {
+    return projection;
+}
+
+View::Projection View::getProjectionType() {
+    return currentProjection;
 }
 
 void View::moveCamera(short direction, GLfloat distance) {

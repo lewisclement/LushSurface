@@ -146,9 +146,6 @@ bool RenderEngine::initializeScene() {
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
 
-    //projection = glm::perspective(45.0f, (GLfloat)windowWidth / windowHeight, 0.1f, 1000.0f);
-    projection = glm::ortho(0.0f, 24.0f, 0.0f, 13.5f, 0.1f, 100.0f);
-
 
     /*textures = new GLuint[2];
     glGenTextures(2, textures);
@@ -233,6 +230,14 @@ void RenderEngine::keyInput(SDL_KeyboardEvent key) {
         if(key.type == SDL_KEYDOWN) {right = true;} else {right = false;}
     } else if(k == SDLK_LEFT || k == SDLK_a) {
         if(key.type == SDL_KEYDOWN) {left = true;} else {left = false;}
+    } else if(k == SDLK_p) {
+        if(key.type == SDL_KEYDOWN) {
+            View::Projection current = view->getProjectionType();
+            if(current == View::birdseye)
+                view->setProjection(View::strategic);
+            else if (current == View::strategic)
+                view->setProjection(View::birdseye);
+        }
     }
 }
 
@@ -349,7 +354,7 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
     GLint viewLocation = glGetUniformLocation(lightingShader->programID, "view");
     glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view->getViewMatrix()));
     GLint projectionLocation = glGetUniformLocation(lightingShader->programID, "projection");
-    glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
+    glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(view->getProjectionMatrix()));
 
     glBindVertexArray(VAO);
 
@@ -370,7 +375,7 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
     viewLocation = glGetUniformLocation(lampShader->programID, "view");
     projectionLocation = glGetUniformLocation(lampShader->programID, "projection");
     glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view->getViewMatrix()));
-    glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(projection));
+    glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(view->getProjectionMatrix()));
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
@@ -392,6 +397,10 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
     delete[] lightPositions;
 
     SDL_GL_SwapWindow(screen);
+}
+
+View RenderEngine::getView() {
+    return *view;
 }
 
 RenderEngine::RenderEngine() {

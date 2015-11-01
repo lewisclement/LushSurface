@@ -30,12 +30,12 @@ int main() {
                     } else {
                         renderer->keyInput(event.key);
                     }
+                    break;
                 }
-                [[clang::fallthrough]];
                 case SDL_KEYUP: {
                     renderer->keyInput(event.key);
+                    break;
                 }
-                [[clang::fallthrough]];
                 case SDL_MOUSEMOTION: {
                     int x, y;
                     SDL_GetRelativeMouseState(&x, &y);

@@ -8,9 +8,13 @@ public:
     Entity(unsigned long ID);
     ~Entity();
 
+    glm::vec3 * getLocation();
+
 private:
     unsigned long ID = 0;
-    glm::dvec3 location;
+
+protected:
+    glm::vec3 *location;
 };
 
 #endif

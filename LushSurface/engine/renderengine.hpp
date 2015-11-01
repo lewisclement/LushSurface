@@ -27,6 +27,8 @@ public:
 
     SDL_Keysym lastKey;
 
+    View *view;
+
 private:
     bool initializeGL();
     bool initializeScene();
@@ -48,8 +50,6 @@ private:
 
     glm::mat4 trans;
     glm::mat4 model;
-
-    View *view;
 };
 
 #endif // RENDERENGINE_H

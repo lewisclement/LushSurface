@@ -10,7 +10,7 @@ public:
     View();
     ~View();
 
-    void setFocusPoint();
+    void setFocusPoint(glm::vec3 *point);
     void setProjection(Projection p);
 
     glm::vec3 getFocusPoint();
@@ -28,7 +28,7 @@ public:
 private:
     glm::vec3 *focus;
 
-    glm::vec3 cameraPos   = glm::vec3(0.0, 30.0,  3.0);
+    glm::vec3 cameraPos   = glm::vec3(0.0f, 30.0f,  0.0f);
     glm::vec3 cameraFront = glm::vec3(3.0f, -3.0f, 3.0f);
     glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
@@ -36,6 +36,9 @@ private:
     glm::mat4 projection;
 
     Projection currentProjection;
+
+
+    void updateCameraPos();
 };
 
 #endif

@@ -1,6 +1,7 @@
 #include "pch.hpp"
 
 #include "engine/renderengine.hpp"
+#include "engine/entities/player.hpp"
 
 static RenderEngine* renderer;
 static GLulong frameCount = 0;
@@ -11,6 +12,9 @@ int main() {
     bool done = false;
 
     if(!renderer->initialize()) return 1;
+
+    Player player(0);////Temporary
+    renderer->view->setFocusPoint(player.getLocation());////Temporary
 
     GLuint lastTime = SDL_GetTicks();
     while(!done) {
@@ -29,11 +33,13 @@ int main() {
                         break;
                     } else {
                         renderer->keyInput(event.key);
+                        player.keyInput(event.key);
                     }
                     break;
                 }
                 case SDL_KEYUP: {
                     renderer->keyInput(event.key);
+                    player.keyInput(event.key);
                     break;
                 }
                 case SDL_MOUSEMOTION: {
@@ -49,6 +55,8 @@ int main() {
         if(currentTime - lastTime < 1000/frameRate) {
             continue;
         }
+
+        player.processInput(currentTime - lastTime);
 
         renderer->render(currentTime - lastTime, currentTime);
         frameCount++;

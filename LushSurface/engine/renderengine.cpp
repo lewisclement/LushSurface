@@ -222,15 +222,7 @@ void RenderEngine::mouseInput(GLint relX, GLint relY) {
 
 void RenderEngine::keyInput(SDL_KeyboardEvent key) {
     SDL_Keycode k = key.keysym.sym;
-    if(k == SDLK_DOWN || k == SDLK_s) {
-        if(key.type == SDL_KEYDOWN) {down = true;} else {down = false;}
-    } else if(k == SDLK_UP || k == SDLK_w) {
-        if(key.type == SDL_KEYDOWN) {up = true;} else {up = false;}
-    } else if(k == SDLK_RIGHT || k == SDLK_d) {
-        if(key.type == SDL_KEYDOWN) {right = true;} else {right = false;}
-    } else if(k == SDLK_LEFT || k == SDLK_a) {
-        if(key.type == SDL_KEYDOWN) {left = true;} else {left = false;}
-    } else if(k == SDLK_p) {
+    if(k == SDLK_p) {
         if(key.type == SDL_KEYDOWN) {
             View::Projection current = view->getProjectionType();
             if(current == View::birdseye)
@@ -242,20 +234,6 @@ void RenderEngine::keyInput(SDL_KeyboardEvent key) {
 }
 
 void RenderEngine::processInput(GLuint deltaTime) {
-    GLfloat cameraSpeed = 0.03f * deltaTime;
-
-    if(down) {
-        view->moveCamera(0, cameraSpeed);
-    }
-    if(up) {
-        view->moveCamera(1, cameraSpeed);
-    }
-    if(right) {
-        view->moveCamera(2, cameraSpeed);
-    }
-    if(left) {
-        view->moveCamera(3, cameraSpeed);
-    }
     glm::vec3 cameraPos = view->getCameraPos();
     world->loadTerrain(cameraPos.x, cameraPos.z + chunkSize / 2);
 }

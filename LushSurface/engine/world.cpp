@@ -32,6 +32,8 @@ World::~World() {
     for(unsigned long i = 0; i < chunks.size(); i++) {
         delete chunks[i];
     }
+
+    delete generator;
 }
 
 bool World::loadTerrain(float x, float y) {

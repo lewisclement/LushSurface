@@ -34,12 +34,12 @@ TerrainColumn Chunk::getTerrain(uint16_t x, uint16_t y) {
 }
 
 void Chunk::initialize(int32_t x, int32_t y) {
-    if(loaded == true) {
+    if(loaded) {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
         glDeleteBuffers(1, &VBO);
-        glDeleteBuffers(1, &VAO);
+        glDeleteVertexArrays(1, &VAO);
 
         vertices.clear();
         blockHeights.clear();

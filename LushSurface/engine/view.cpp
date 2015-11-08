@@ -2,7 +2,7 @@
 
 View::View() {
     focus = NULL;
-    projection = glm::ortho(0.0f, 24.0f, 0.0f, 13.5f, 0.1f, 100.0f);
+    projection = glm::ortho(-12.0f, 12.0f, -6.75f, 6.75f, 0.1f, 100.0f);
     currentProjection = strategic;
 }
 
@@ -16,12 +16,26 @@ void View::setFocusPoint(glm::vec3 *point) {
 
 void View::setProjection(Projection p) {
     if(p == strategic) {
-        projection = glm::ortho(0.0f, 24.0f, 0.0f, 13.5f, 0.1f, 100.0f);
+        projection = glm::ortho(-12.0f, 12.0f, -6.75f, 6.75f, 0.1f, 100.0f);
         currentProjection = strategic;
     } else if(p == birdseye) {
         projection = glm::perspective(45.0f, (GLfloat)1280 / 720, 0.1f, 1000.0f);
         currentProjection = birdseye;
     }
+}
+
+void View::setYaw(GLfloat Yaw) {
+    yaw = Yaw;
+}
+
+void View::setPitch(GLfloat Pitch) {
+    pitch = Pitch;
+}
+
+void View::setCameraFront(glm::vec3 CameraFront) {
+    cameraFront.x = CameraFront.x;
+    cameraFront.y = CameraFront.y;
+    cameraFront.z = CameraFront.z;
 }
 
 glm::vec3 View::getCameraPos() {
@@ -40,6 +54,14 @@ glm::mat4 View::getViewMatrix() {
 
 glm::mat4 View::getProjectionMatrix() {
     return projection;
+}
+
+GLfloat View::getYaw() {
+    return yaw;
+}
+
+GLfloat View::getPitch() {
+    return pitch;
 }
 
 View::Projection View::getProjectionType() {
@@ -66,6 +88,8 @@ void View::moveCamera(short direction, GLfloat distance) {
 void View::updateCameraPos() {
     if(focus != NULL) {
         cameraPos = *focus;
-        cameraPos.y += 30.0f;
+        cameraPos.y += 10.0f;
+        cameraPos.x -= 10.0f;
+        cameraPos.z -= 10.0f;
     } else return;
 }

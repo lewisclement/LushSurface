@@ -8,6 +8,8 @@ public:
     Entity(unsigned long ID);
     ~Entity();
 
+    void setLocation(glm::vec3 Location);
+
     glm::vec3 * getLocation();
 
 private:

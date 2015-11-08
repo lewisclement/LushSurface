@@ -15,6 +15,11 @@ int main() {
 
     Player player(0);////Temporary
     renderer->view->setFocusPoint(player.getLocation());////Temporary
+    glm::vec3 startLocation;
+    startLocation.x = player.getLocation()->x;
+    startLocation.y = player.getLocation()->y + 20;
+    startLocation.z = player.getLocation()->z;
+    player.setLocation(startLocation);////Temporary
 
     GLuint lastTime = SDL_GetTicks();
     while(!done) {
@@ -57,6 +62,7 @@ int main() {
         }
 
         player.processInput(currentTime - lastTime);
+        renderer->lightPositions[0] = *player.getLocation();
 
         renderer->render(currentTime - lastTime, currentTime);
         frameCount++;

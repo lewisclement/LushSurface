@@ -4,7 +4,7 @@
 #include "../pch.hpp"
 #include "simplexnoise.hpp"
 
-const uint16_t chunkSize = 32;
+const uint16_t chunkSize = 64;
 const uint8_t loadedWorldSize = 3; //3*3 = 9
 const uint8_t loadingAnimationHeight = 10;
 const uint16_t loadingAnimationTerrainDuration = 1000;

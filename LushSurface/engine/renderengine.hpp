@@ -29,6 +29,9 @@ public:
 
     View *view;
 
+    //Temporary
+    glm::vec3 lightPositions[4];
+
 private:
     bool initializeGL();
     bool initializeScene();
@@ -38,8 +41,6 @@ private:
 
     Shader *lightingShader, *lampShader;
     World *world;
-
-    GLfloat yaw = -90.0f, pitch = 0.0f;
 
     GLuint windowWidth = MIN_WIDTH;
     GLuint windowHeight = MIN_HEIGHT;

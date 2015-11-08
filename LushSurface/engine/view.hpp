@@ -12,6 +12,9 @@ public:
 
     void setFocusPoint(glm::vec3 *point);
     void setProjection(Projection p);
+    void setYaw(GLfloat Yaw);
+    void setPitch(GLfloat Pitch);
+    void setCameraFront(glm::vec3 CameraFront);
 
     glm::vec3 getFocusPoint();
 
@@ -20,6 +23,9 @@ public:
 
     glm::mat4 getViewMatrix();
     glm::mat4 getProjectionMatrix();
+
+    GLfloat getYaw();
+    GLfloat getPitch();
 
     Projection getProjectionType();
 
@@ -34,6 +40,8 @@ private:
 
     glm::mat4 view;
     glm::mat4 projection;
+
+    GLfloat yaw = -90.0f, pitch = 0.0f;
 
     Projection currentProjection;
 

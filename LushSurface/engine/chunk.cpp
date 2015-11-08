@@ -7,7 +7,7 @@ Chunk::Chunk(SimplexNoise *Generator) {
 Chunk::~Chunk() {
     loaded = false;
 
-    glDeleteBuffers(1, &VAO);
+    glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 
     worldHeightDataLower.clear();

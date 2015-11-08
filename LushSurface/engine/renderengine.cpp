@@ -29,7 +29,7 @@ bool RenderEngine::initializeGL() {
     atexit(SDL_Quit);
 
     GLint majorVersionError = SDL_GL_SetAttribute (SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    GLint minorVersionError = SDL_GL_SetAttribute (SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    GLint minorVersionError = SDL_GL_SetAttribute (SDL_GL_CONTEXT_MINOR_VERSION, 3);
     GLint profileMaskError = SDL_GL_SetAttribute (SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     if (majorVersionError < 0 || minorVersionError < 0 || profileMaskError < 0) {
         std::cout << "\033[1;31mCould not enable OpenGL 3.3: " << majorVersionError << ":" << minorVersionError << ":" << profileMaskError << "\033[0m" << std::endl;
@@ -203,21 +203,23 @@ bool RenderEngine::initializeScene() {
 
 void RenderEngine::mouseInput(GLint relX, GLint relY) {
     //For testing purposes
-    /*
+
     if(!(SDL_GetWindowFlags(screen) & SDL_WINDOW_MOUSE_FOCUS)) return;
 
-    yaw += relX / 10.0f;
-    pitch += -relY / 10.0f;
+    view->setYaw(view->getYaw() + relX / 10.0f);
+    view->setPitch(view->getPitch() + -relY / 10.0f);
 
-    if(pitch > 89.0f) {pitch =  89.0f;}
-    else if(pitch < -89.0f) {pitch = -89.0f;}
+    GLfloat yaw = view->getYaw();
+    GLfloat pitch = view->getPitch();
+
+    if(pitch > 89.0f) {view->setPitch(89.0f);}
+    else if(pitch < -89.0f) {view->setPitch(-89.0f);}
 
     glm::vec3 front;
     front.x = float(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
     front.y = float(sin(glm::radians(pitch)));
     front.z = float(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
-    cameraFront = glm::normalize(front);
-    */
+    view->setCameraFront(glm::normalize(front));
 }
 
 void RenderEngine::keyInput(SDL_KeyboardEvent key) {
@@ -250,8 +252,6 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
     //glBindTexture(GL_TEXTURE_2D, textures[0]);
 
     //glm::vec3 lightPos = glm::vec3(1.2f, 1.0f, fmod(ticks / 100.0f, 50.0f) - 40.0f);
-    glm::vec3 *lightPositions = new glm::vec3[4];
-    lightPositions[0] = glm::vec3(cos(ticks / 500.0f) * 15 + 5, 1.0f, sin(ticks / 500.0f) * 15 - 15);
     lightPositions[1] = glm::vec3(cos(ticks / 300.0f) * 15 + 5, 1.0f, sin(ticks / 500.0f) * 15 - 15);
     lightPositions[2] = glm::vec3(cos(ticks / 500.0f) * 15 + 5, 1.0f, sin(ticks / 300.0f) * 15 - 15);
     lightPositions[3] = glm::vec3(cos(ticks / 200.0f) * 15 + 5, 1.0f, sin(ticks / 200.0f) * 15 - 15);
@@ -370,9 +370,6 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
 
     }
     glBindVertexArray(0);
-
-
-    delete[] lightPositions;
 
     SDL_GL_SwapWindow(screen);
 }

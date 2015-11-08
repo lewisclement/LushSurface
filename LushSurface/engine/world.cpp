@@ -19,7 +19,7 @@ World::World(float x, float y) {
     int32_t centerChunkY = int32_t(y / chunkSize);
 
     generator = new SimplexNoise();
-    generator->setSeed(1234567890);
+    generator->setSeed(34142345);
 
     for(int i = 0; i < loadedWorldSize * loadedWorldSize; i++) {
         Chunk *chunk = new Chunk(generator);

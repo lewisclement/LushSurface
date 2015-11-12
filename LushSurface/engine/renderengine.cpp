@@ -1,7 +1,5 @@
 #include "renderengine.hpp"
 
-static bool up = false, down = false, right = false, left = false;
-
 bool RenderEngine::initialize(GLuint width, GLuint height) {
     windowWidth = width;
     windowHeight = height;
@@ -387,4 +385,8 @@ RenderEngine::~RenderEngine() {
     delete view;
     delete lightingShader;
     delete lampShader;
+}
+
+World * RenderEngine::getWorld() {
+    return world;
 }

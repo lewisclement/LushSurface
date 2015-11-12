@@ -3,6 +3,8 @@
 #include "engine/renderengine.hpp"
 #include "engine/entities/player.hpp"
 
+#include "engine/world.hpp"
+
 static RenderEngine* renderer;
 static GLulong frameCount = 0;
 static GLuint frameRate = 60;
@@ -13,11 +15,11 @@ int main() {
 
     if(!renderer->initialize()) return 1;
 
-    Player player(0);////Temporary
+    Player player(0, renderer->getWorld());////Temporary
     renderer->view->setFocusPoint(player.getLocation());////Temporary
     glm::vec3 startLocation;
     startLocation.x = player.getLocation()->x;
-    startLocation.y = player.getLocation()->y + 20;
+    startLocation.y = player.getLocation()->y + 25;
     startLocation.z = player.getLocation()->z;
     player.setLocation(startLocation);////Temporary
 

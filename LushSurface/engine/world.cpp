@@ -44,6 +44,8 @@ bool World::loadTerrain(float x, float y) {
         int xDir = newFocusChunkX - focusChunkX;
         int yDir = newFocusChunkY - focusChunkY;
 
+        if(xDir > 10) std::cout << xDir << ":" << yDir << std::endl;
+
         if(xDir == 0 && yDir != 0) {
             Chunk *chunk = getChunk(focusChunkX, focusChunkY - yDir);
             chunk->initialize(newFocusChunkX, newFocusChunkY + yDir);
@@ -113,4 +115,11 @@ std::vector<Coordinate> World::getChunkCoordinates() {
     }
 
     return coords;
+}
+
+TerrainColumn World::getTerrain(uint16_t x, uint16_t y) {
+    int32_t chunkX = int32_t(x / chunkSize);
+    int32_t chunkY = int32_t(y / chunkSize);
+
+    return getChunk(chunkX, chunkY)->getTerrain(x % chunkSize, y % chunkSize);
 }

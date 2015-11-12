@@ -24,28 +24,46 @@ void Player::keyInput(SDL_KeyboardEvent key) {
 }
 
 void Player::processInput(GLuint deltaTime) {
-    GLfloat cameraSpeed = 0.02f * deltaTime;
+    GLfloat speed = 0.02f * deltaTime;
+
+    glm::vec3 newLocation = *location;
 
     if(down) {
-        location->z -= cameraSpeed;
-        location->x -= cameraSpeed;
+        newLocation.z -= speed;
+        newLocation.x -= speed;
     }
     if(up) {
-        location->z += cameraSpeed;
-        location->x += cameraSpeed;
+        newLocation.z += speed;
+        newLocation.x += speed;
     }
     if(right) {
-        location->z += cameraSpeed;
-        location->x -= cameraSpeed;
+        newLocation.z += speed;
+        newLocation.x -= speed;
     }
     if(left) {
-        location->z -= cameraSpeed;
-        location->x += cameraSpeed;
+        newLocation.z -= speed;
+        newLocation.x += speed;
     }
+
+    int32_t top = tempWorld->getTerrain(newLocation.x, newLocation.z).top;
+    if(top >= newLocation.y) {
+        newLocation = *location;
+    } else {
+        *location = newLocation;
+    }
+
+
     if(lower) {
-        location->y -= cameraSpeed;
+        newLocation.y -= speed;
     }
     if(higher) {
-        location->y += cameraSpeed;
+        newLocation.y += speed;
+    }
+
+    top = tempWorld->getTerrain(newLocation.x, newLocation.z).top;
+    if(top >= newLocation.y) {
+        newLocation = *location;
+    } else {
+        *location = newLocation;
     }
 }

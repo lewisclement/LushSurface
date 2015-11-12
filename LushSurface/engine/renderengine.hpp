@@ -22,6 +22,8 @@ public:
 
     View getView();
 
+    World * getWorld(); ////Temporary
+
     RenderEngine();
     ~RenderEngine();
 

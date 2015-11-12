@@ -62,6 +62,7 @@ public:
 
     Chunk* getChunk(int32_t x, int32_t y);
     std::vector<Coordinate> getChunkCoordinates();
+    TerrainColumn getTerrain(uint16_t x, uint16_t y);
 
 private:
     std::vector<Chunk*> chunks;

@@ -61,7 +61,7 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 viewPos, vec3 viewDir);
 
 void main()
 {
-    vec3 result;
+    vec3 result = vec3(0.0f, 0.0f, 0.0f);
 
     vec3 norm = normalize(Normal);
     vec3 viewDirection = normalize(viewPosition - fragPosition);
@@ -70,7 +70,7 @@ void main()
     /*for(int i = 0; i < NR_POINT_LIGHTS; i++) {
         result += CalcPointLight(pointLights[i], norm, fragPosition, viewDirection);
     }*/
-    result += CalcSpotLight(spot, norm, viewPosition, viewDirection);
+    //result += CalcSpotLight(spot, norm, viewPosition, viewDirection);
 
     color = vec4(result, 1.0f);
 }

@@ -547,7 +547,7 @@
 	"../pch.hpp"
 	"simplexnoise.hpp"
 
-1455461045 /home/lewis/Documents/Programming/LushSurface/LushSurface/pch.hpp
+1468683294 /home/lewis/Documents/Programming/LushSurface/LushSurface/pch.hpp
 	<iostream>
 	<fstream>
 	<stdio.h>
@@ -564,6 +564,7 @@
 	"../glm/glm/glm.hpp"
 	"../glm/glm/gtc/type_ptr.hpp"
 	"../glm/glm/gtc/matrix_transform.hpp"
+	"../glm/glm/gtc/matrix_inverse.hpp"
 
 1451764591 /home/lewis/Documents/Programming/LushSurface/LushSurface/SDL2/SDL.h
 	"SDL_main.h"
@@ -1392,7 +1393,7 @@
 	"../pch.hpp"
 	"entity.hpp"
 
-1455459688 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/renderengine.cpp
+1468683215 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/renderengine.cpp
 	"renderengine.hpp"
 
 1455459688 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/renderengine.hpp
@@ -1425,4 +1426,14 @@
 	"engine/renderengine.hpp"
 	"engine/entities/player.hpp"
 	"engine/world.hpp"
+
+1455459688 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtc/matrix_inverse.hpp
+	"../detail/setup.hpp"
+	"../matrix.hpp"
+	"../mat2x2.hpp"
+	"../mat3x3.hpp"
+	"../mat4x4.hpp"
+	"matrix_inverse.inl"
+
+1455459688 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtc/matrix_inverse.inl
 

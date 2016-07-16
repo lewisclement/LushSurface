@@ -327,6 +327,7 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
     glUniform3f(viewPosLoc, cameraPos.x, cameraPos.y, cameraPos.z);
 
     GLint modelLocation = glGetUniformLocation(lightingShader->programID, "model");
+    GLint normalModelLocation = glGetUniformLocation(lightingShader->programID, "normalModel");
     GLint viewLocation = glGetUniformLocation(lightingShader->programID, "view");
     glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view->getViewMatrix()));
     GLint projectionLocation = glGetUniformLocation(lightingShader->programID, "projection");
@@ -339,6 +340,9 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
     for(unsigned long chunk = 0; chunk < coords.size(); chunk++) {
         model = glm::translate(glm::mat4(), glm::vec3(coords[chunk].x * chunkSize, 0.0f, coords[chunk].y * chunkSize));
         glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+        glm::mat3 normalModel = glm::inverseTranspose(glm::mat3(model));
+        glUniformMatrix3fv(normalModelLocation, 1, GL_FALSE, glm::value_ptr(normalModel));
+
         Chunk *c = world->getChunk(coords[chunk].x, coords[chunk].y);
         c->bindVBO();
         glDrawArrays(GL_TRIANGLES, 0, c->getTriangleCount());

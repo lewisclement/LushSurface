@@ -64,6 +64,23 @@ void Chunk::initialize(int32_t x, int32_t y) {
     glEnableVertexAttribArray(1);
     glBindVertexArray(0);
 
+    generateChunkv2();
+
+    for(uint16_t i = 0; i < chunkSize; i++) {
+        for(uint16_t j = 0; j < chunkSize; j++) {
+            for(uint16_t k = worldHeightDataLower[i][j]; k <= worldHeightDataUpper[i][j]; k++) {
+                addCube(i, k, j);
+                blockHeights.push_back(k);
+            }
+        }
+    }
+
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_DYNAMIC_DRAW);
+
+    loaded = true;
+}
+
+void Chunk::generateChunkv1() {
     for(uint16_t i = 0; i < chunkSize; i++) {
         std::vector<uint16_t> subUp;
         worldHeightDataUpper.push_back(subUp);
@@ -81,19 +98,31 @@ void Chunk::initialize(int32_t x, int32_t y) {
             if(hole) worldHeightDataUpper[i][j] = 0;
         }
     }
+}
 
+void Chunk::generateChunkv2() {
     for(uint16_t i = 0; i < chunkSize; i++) {
+        std::vector<uint16_t> subUp;
+        worldHeightDataUpper.push_back(subUp);
+        std::vector<uint16_t> subDown;
+        worldHeightDataLower.push_back(subDown);
+
         for(uint16_t j = 0; j < chunkSize; j++) {
-            for(uint16_t k = worldHeightDataLower[i][j]; k <= worldHeightDataUpper[i][j]; k++) {
-                addCube(i, k, j);
-                blockHeights.push_back(k);
-            }
+            worldHeightDataUpper[i].push_back(uint16_t(generator->scaled_raw_noise_2d(17, 25, (i + xPos * chunkSize) / 40.0f, (j + yPos * chunkSize) / 40.0f)));
+            worldHeightDataUpper[i][j] = (uint16_t)std::max(generator->scaled_raw_noise_2d(17, 23, (i + xPos * chunkSize) / 10.0f, (j + yPos * chunkSize) / 10.0f), float(worldHeightDataUpper[i][j]));
+            worldHeightDataUpper[i][j] = (uint16_t)std::min(generator->scaled_raw_noise_2d(17, 35, (i + xPos * chunkSize) / 100.0f, (j + yPos * chunkSize) / 100.0f), float(worldHeightDataUpper[i][j]));
+
+            bool height = int(generator->scaled_raw_noise_2d(0, 3, (i + xPos * chunkSize) / 40.0f, (j + yPos * chunkSize) / 40.0f)) == 2;
+            if(height) worldHeightDataUpper[i][j] = (uint16_t)std::max(generator->scaled_raw_noise_2d(23, 30, (i + xPos * chunkSize) / 50.0f, (j + yPos * chunkSize) / 50.0f), float(worldHeightDataUpper[i][j]));
+
+            worldHeightDataLower[i].push_back(uint16_t(generator->scaled_raw_noise_2d(12, 24, (i + xPos * chunkSize) / 120.0f, (j + yPos * chunkSize) / 120.0f)));
+
+            bool hole = int(generator->scaled_raw_noise_2d(0, 5, (i + xPos * chunkSize) / 80.0f, (j + yPos * chunkSize) / 80.0f)) == 0;
+            if(hole) worldHeightDataUpper[i][j] = 0;
+
+            if(worldHeightDataLower[i][j] >= worldHeightDataUpper[i][j]) worldHeightDataUpper[i][j] = 0;
         }
     }
-
-    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_DYNAMIC_DRAW);
-
-    loaded = true;
 }
 
 void Chunk::addCube(uint16_t x, uint16_t y, uint16_t z) {

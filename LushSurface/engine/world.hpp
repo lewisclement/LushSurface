@@ -38,6 +38,9 @@ public:
     bool isLoaded();
 
 private:
+    void generateChunkv1();
+    void generateChunkv2();
+
     int32_t xPos, yPos;
     std::vector<std::vector<uint16_t> > worldHeightDataLower;
     std::vector<std::vector<uint16_t> > worldHeightDataUpper;

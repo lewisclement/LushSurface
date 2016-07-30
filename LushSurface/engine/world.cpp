@@ -134,8 +134,5 @@ TerrainColumn World::getTerrain(int32_t x, int32_t y) {
         relativeY = chunkSize + relativeY;
     }
 
-    std::cout << x << ":" << y << " = " << chunkX << ":" << chunkY << std::endl;
-    std::cout << relativeX << ":" << relativeY << std::endl << std::endl;
-
     return getChunk(chunkX, chunkY)->getTerrain(relativeX, relativeY);
 }

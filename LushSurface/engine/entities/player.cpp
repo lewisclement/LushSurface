@@ -66,4 +66,6 @@ void Player::processInput(GLuint deltaTime) {
     } else {
         *location = newLocation;
     }
+
+    *location = newLocation;
 }

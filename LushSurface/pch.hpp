@@ -17,6 +17,7 @@
 #include "SDL2/SDL_image.h"
 #include <GL/glew.h>
 #include <GL/glu.h>
+#include <bullet/btBulletDynamicsCommon.h>
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdocumentation"

@@ -169,7 +169,7 @@ void Chunk::fillVertexes() {
                     pointCount += 6;
                 }
 
-                if(x == 0 || y > worldHeightDataUpper[x-1][z]) {
+                if(x == 0 || y > worldHeightDataUpper[x-1][z] || y < worldHeightDataLower[x-1][z]) {
                     vertices.push_back((GLfloat)x - 0.5f);
                     vertices.push_back((GLfloat)y);
                     vertices.push_back((GLfloat)z - 0.5f);
@@ -214,7 +214,7 @@ void Chunk::fillVertexes() {
                     pointCount += 6;
                 }
 
-                if(x == chunkSize-1 || y > worldHeightDataUpper[x+1][z]) {
+                if(x == chunkSize-1 || y > worldHeightDataUpper[x+1][z] || y < worldHeightDataLower[x+1][z]) {
                     vertices.push_back((GLfloat)x + 0.5f);
                     vertices.push_back((GLfloat)y);
                     vertices.push_back((GLfloat)z - 0.5f);
@@ -259,7 +259,7 @@ void Chunk::fillVertexes() {
                     pointCount += 6;
                 }
 
-                if(z == 0 || y > worldHeightDataUpper[x][z-1]) {
+                if(z == 0 || y > worldHeightDataUpper[x][z-1] || y < worldHeightDataLower[x][z-1]) {
                     vertices.push_back((GLfloat)x - 0.5f);
                     vertices.push_back((GLfloat)y);
                     vertices.push_back((GLfloat)z - 0.5f);
@@ -304,7 +304,7 @@ void Chunk::fillVertexes() {
                     pointCount += 6;
                 }
 
-                if(z == chunkSize-1 || y > worldHeightDataUpper[x][z+1]) {
+                if(z == chunkSize-1 || y > worldHeightDataUpper[x][z+1] || y < worldHeightDataLower[x][z+1]) {
                     vertices.push_back((GLfloat)x - 0.5f);
                     vertices.push_back((GLfloat)y);
                     vertices.push_back((GLfloat)z + 0.5f);

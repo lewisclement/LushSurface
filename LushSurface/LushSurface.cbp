@@ -18,6 +18,7 @@
 					<Add option="-Wno-c++98-compat" />
 					<Add option="-Wno-c++98-compat-pedantic" />
 					<Add option="-DDEBUG" />
+					<Add directory="../bullet" />
 				</Compiler>
 				<Linker>
 					<Add option="-lGL" />
@@ -27,6 +28,13 @@
 					<Add option="-lSDL2_image" />
 					<Add option="-lpng" />
 					<Add option="-lz" />
+					<Add option="-lBulletDynamics" />
+					<Add option="-lBulletCollision" />
+					<Add option="-lLinearMath" />
+					<Add library="../bullet/libs/libLinearMath.a" />
+					<Add library="../bullet/libs/libBulletDynamics.a" />
+					<Add library="../bullet/libs/libBulletCollision.a" />
+					<Add directory="../bullet/libs" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -50,6 +58,9 @@
 					<Add option="-lSDL2_image" />
 					<Add option="-lpng" />
 					<Add option="-lz" />
+					<Add option="-lBulletDynamics" />
+					<Add option="-lBulletCollision" />
+					<Add option="-lLinearMath" />
 				</Linker>
 			</Target>
 			<Target title="Debug GCC">
@@ -73,6 +84,9 @@
 					<Add option="-lSDL2_image" />
 					<Add option="-lpng" />
 					<Add option="-lz" />
+					<Add option="-lBulletDynamics" />
+					<Add option="-lBulletCollision" />
+					<Add option="-lLinearMath" />
 				</Linker>
 			</Target>
 			<Target title="Release GCC">
@@ -96,6 +110,9 @@
 					<Add option="-lSDL2_image" />
 					<Add option="-lpng" />
 					<Add option="-lz" />
+					<Add option="-lBulletDynamics" />
+					<Add option="-lBulletCollision" />
+					<Add option="-lLinearMath" />
 				</Linker>
 			</Target>
 		</Build>

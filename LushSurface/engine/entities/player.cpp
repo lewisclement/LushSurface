@@ -45,7 +45,7 @@ void Player::processInput(GLuint deltaTime) {
         newLocation.x += speed;
     }
 
-    int32_t top = tempWorld->getTerrain(newLocation.x, newLocation.z).top;
+    int32_t top = tempWorld->getTerrain((int32_t)newLocation.x, (int32_t)newLocation.z).top;
     if(top >= newLocation.y) {
         newLocation = *location;
     } else {
@@ -60,7 +60,7 @@ void Player::processInput(GLuint deltaTime) {
         newLocation.y += speed;
     }
 
-    top = tempWorld->getTerrain(newLocation.x, newLocation.z).top;
+    top = tempWorld->getTerrain((int32_t)newLocation.x, (int32_t)newLocation.z).top;
     if(top >= newLocation.y) {
         newLocation = *location;
     } else {

@@ -41,6 +41,8 @@ private:
     void generateChunkv1();
     void generateChunkv2();
 
+    void fillVertexes();
+
     int32_t xPos, yPos;
     std::vector<std::vector<uint16_t> > worldHeightDataLower;
     std::vector<std::vector<uint16_t> > worldHeightDataUpper;

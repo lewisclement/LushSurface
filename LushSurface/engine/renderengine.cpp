@@ -144,51 +144,6 @@ bool RenderEngine::initializeScene() {
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
 
-
-    /*textures = new GLuint[2];
-    glGenTextures(2, textures);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textures[0]);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    SDL_Surface* loadedSurface = IMG_Load("container2.png");
-    if(loadedSurface == NULL) {
-        std::cout << "Unable to load image container2.png. SDL_Image error: " << IMG_GetError() << std::endl;
-        return false;
-    }
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, loadedSurface->w, loadedSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, loadedSurface->pixels);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    SDL_FreeSurface(loadedSurface);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, textures[1]);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    loadedSurface = IMG_Load("container2_specular.png");
-    if(loadedSurface == NULL) {
-        std::cout << "Unable to load image container2_specular.png. SDL_Image error: " << IMG_GetError() << std::endl;
-        return false;
-    }
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, loadedSurface->w, loadedSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, loadedSurface->pixels);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    SDL_FreeSurface(loadedSurface);*/
-
-    //defaultShader = new Shader("default.vert", "default.frag");
     lightingShader = new Shader("shaders/lighting.vert", "shaders/lighting.frag");
     lampShader = new Shader("shaders/lamp.vert", "shaders/lamp.frag");
 

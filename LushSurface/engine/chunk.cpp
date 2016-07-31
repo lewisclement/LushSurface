@@ -66,14 +66,7 @@ void Chunk::initialize(int32_t x, int32_t y) {
 
     generateChunkv2();
 
-    for(uint16_t i = 0; i < chunkSize; i++) {
-        for(uint16_t j = 0; j < chunkSize; j++) {
-            for(uint16_t k = worldHeightDataLower[i][j]; k <= worldHeightDataUpper[i][j]; k++) {
-                addCube(i, k, j);
-                blockHeights.push_back(k);
-            }
-        }
-    }
+    fillVertexes();
 
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_DYNAMIC_DRAW);
 
@@ -94,7 +87,6 @@ void Chunk::generateChunkv1() {
             worldHeightDataLower[i].push_back(uint16_t(generator->scaled_raw_noise_2d(12, worldHeightDataUpper[i][j] - 1, (i + xPos * chunkSize) / 10.0f, (j + yPos * chunkSize) / 10.0f)));
 
             bool hole = int(generator->scaled_raw_noise_2d(0, 5, (i + xPos * chunkSize) / 80.0f, (j + yPos * chunkSize) / 80.0f)) % 3 == 0;
-            //hole = int(generator->scaled_raw_noise_2d(0, 3, (i + xPos * chunkSize) / 80.0f, (j + yPos * chunkSize) / 80.0f)) % 2 == 0;
             if(hole) worldHeightDataUpper[i][j] = 0;
         }
     }
@@ -125,225 +117,240 @@ void Chunk::generateChunkv2() {
     }
 }
 
-void Chunk::addCube(uint16_t x, uint16_t y, uint16_t z) {
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.0f);
+void Chunk::fillVertexes() {
+    for(uint16_t x = 0; x < chunkSize; x++) {
+        for(uint16_t z = 0; z < chunkSize; z++) {
+            for(uint16_t y = worldHeightDataUpper[x][z]; y >= worldHeightDataLower[x][z]; y--) {
+                //addCube(i, k, j);
+                //blockHeights.push_back(k);
 
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.0f);
+                if(y == worldHeightDataUpper[x][z]) {
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(1.0f);
+                    vertices.push_back(0.0f);
 
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.0f);
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(1.0f);
+                    vertices.push_back(0.0f);
 
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.0f);
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(1.0f);
+                    vertices.push_back(0.0f);
 
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.0f);
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(1.0f);
+                    vertices.push_back(0.0f);
 
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.0f);
-    pointCount += 6;
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(1.0f);
+                    vertices.push_back(0.0f);
 
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(1.0f);
+                    vertices.push_back(0.0f);
+                    pointCount += 6;
+                }
 
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(1.0f);
+                if(x == 0 || y > worldHeightDataUpper[x-1][z]) {
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(-1.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
 
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(1.0f);
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(-1.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
 
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y - 1);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(1.0f);
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y - 1);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(-1.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
 
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(1.0f);
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(-1.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
 
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y - 1);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(1.0f);
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y - 1);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(-1.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
 
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y - 1);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(1.0f);
-    pointCount += 6;
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y - 1);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(-1.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
+                    pointCount += 6;
+                }
 
+                if(x == chunkSize-1 || y > worldHeightDataUpper[x+1][z]) {
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(-1.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
 
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(-1.0f);
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(-1.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
 
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(-1.0f);
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y - 1);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(-1.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
 
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y - 1);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(-1.0f);
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(-1.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
 
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(-1.0f);
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y - 1);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(-1.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
 
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y - 1);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(-1.0f);
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y - 1);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(-1.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
+                    pointCount += 6;
+                }
 
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y - 1);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(-1.0f);
-    pointCount += 6;
+                if(z == 0 || y > worldHeightDataUpper[x][z-1]) {
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(-1.0f);
 
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(-1.0f);
 
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(-1.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y - 1);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(-1.0f);
 
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(-1.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(-1.0f);
 
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y - 1);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(-1.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y - 1);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(-1.0f);
 
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(-1.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y - 1);
+                    vertices.push_back((GLfloat)z - 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(-1.0f);
+                    pointCount += 6;
+                }
 
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y - 1);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(-1.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
+                if(z == chunkSize-1 || y > worldHeightDataUpper[x][z+1]) {
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(-1.0f);
 
-    vertices.push_back((GLfloat)x - 0.5f);
-    vertices.push_back((GLfloat)y - 1);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(-1.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-    pointCount += 6;
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(-1.0f);
 
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y - 1);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(-1.0f);
 
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(-1.0f);
 
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
+                    vertices.push_back((GLfloat)x - 0.5f);
+                    vertices.push_back((GLfloat)y - 1);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(-1.0f);
 
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y - 1);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y - 1);
-    vertices.push_back((GLfloat)z - 0.5f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-
-    vertices.push_back((GLfloat)x + 0.5f);
-    vertices.push_back((GLfloat)y - 1);
-    vertices.push_back((GLfloat)z + 0.5f);
-    vertices.push_back(1.0f);
-    vertices.push_back(0.0f);
-    vertices.push_back(0.0f);
-    pointCount += 6;
+                    vertices.push_back((GLfloat)x + 0.5f);
+                    vertices.push_back((GLfloat)y - 1);
+                    vertices.push_back((GLfloat)z + 0.5f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(0.0f);
+                    vertices.push_back(-1.0f);
+                    pointCount += 6;
+                }
+            }
+        }
+    }
 }
 
 GLint Chunk::getTriangleCount() {

@@ -72,6 +72,12 @@ public:
 private:
     std::vector<Chunk*> chunks;
     SimplexNoise *generator = NULL;
+
+    btBroadphaseInterface* broadphase;
+    btDefaultCollisionConfiguration* collisionConfiguration;
+    btCollisionDispatcher* dispatcher;
+    btSequentialImpulseConstraintSolver* solver;
+    btDiscreteDynamicsWorld* dynamicsWorld;
 };
 
 #endif // WORLD_H

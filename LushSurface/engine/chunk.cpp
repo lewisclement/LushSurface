@@ -218,42 +218,42 @@ void Chunk::fillVertexes() {
                     vertices.push_back((GLfloat)x + 0.5f);
                     vertices.push_back((GLfloat)y);
                     vertices.push_back((GLfloat)z - 0.5f);
-                    vertices.push_back(-1.0f);
+                    vertices.push_back(1.0f);
                     vertices.push_back(0.0f);
                     vertices.push_back(0.0f);
 
                     vertices.push_back((GLfloat)x + 0.5f);
                     vertices.push_back((GLfloat)y);
                     vertices.push_back((GLfloat)z + 0.5f);
-                    vertices.push_back(-1.0f);
+                    vertices.push_back(1.0f);
                     vertices.push_back(0.0f);
                     vertices.push_back(0.0f);
 
                     vertices.push_back((GLfloat)x + 0.5f);
                     vertices.push_back((GLfloat)y - 1);
                     vertices.push_back((GLfloat)z - 0.5f);
-                    vertices.push_back(-1.0f);
+                    vertices.push_back(1.0f);
                     vertices.push_back(0.0f);
                     vertices.push_back(0.0f);
 
                     vertices.push_back((GLfloat)x + 0.5f);
                     vertices.push_back((GLfloat)y);
                     vertices.push_back((GLfloat)z + 0.5f);
-                    vertices.push_back(-1.0f);
+                    vertices.push_back(1.0f);
                     vertices.push_back(0.0f);
                     vertices.push_back(0.0f);
 
                     vertices.push_back((GLfloat)x + 0.5f);
                     vertices.push_back((GLfloat)y - 1);
                     vertices.push_back((GLfloat)z - 0.5f);
-                    vertices.push_back(-1.0f);
+                    vertices.push_back(1.0f);
                     vertices.push_back(0.0f);
                     vertices.push_back(0.0f);
 
                     vertices.push_back((GLfloat)x + 0.5f);
                     vertices.push_back((GLfloat)y - 1);
                     vertices.push_back((GLfloat)z + 0.5f);
-                    vertices.push_back(-1.0f);
+                    vertices.push_back(1.0f);
                     vertices.push_back(0.0f);
                     vertices.push_back(0.0f);
                     pointCount += 6;
@@ -310,42 +310,42 @@ void Chunk::fillVertexes() {
                     vertices.push_back((GLfloat)z + 0.5f);
                     vertices.push_back(0.0f);
                     vertices.push_back(0.0f);
-                    vertices.push_back(-1.0f);
+                    vertices.push_back(1.0f);
 
                     vertices.push_back((GLfloat)x + 0.5f);
                     vertices.push_back((GLfloat)y);
                     vertices.push_back((GLfloat)z + 0.5f);
                     vertices.push_back(0.0f);
                     vertices.push_back(0.0f);
-                    vertices.push_back(-1.0f);
+                    vertices.push_back(1.0f);
 
                     vertices.push_back((GLfloat)x - 0.5f);
                     vertices.push_back((GLfloat)y - 1);
                     vertices.push_back((GLfloat)z + 0.5f);
                     vertices.push_back(0.0f);
                     vertices.push_back(0.0f);
-                    vertices.push_back(-1.0f);
+                    vertices.push_back(1.0f);
 
                     vertices.push_back((GLfloat)x + 0.5f);
                     vertices.push_back((GLfloat)y);
                     vertices.push_back((GLfloat)z + 0.5f);
                     vertices.push_back(0.0f);
                     vertices.push_back(0.0f);
-                    vertices.push_back(-1.0f);
+                    vertices.push_back(1.0f);
 
                     vertices.push_back((GLfloat)x - 0.5f);
                     vertices.push_back((GLfloat)y - 1);
                     vertices.push_back((GLfloat)z + 0.5f);
                     vertices.push_back(0.0f);
                     vertices.push_back(0.0f);
-                    vertices.push_back(-1.0f);
+                    vertices.push_back(1.0f);
 
                     vertices.push_back((GLfloat)x + 0.5f);
                     vertices.push_back((GLfloat)y - 1);
                     vertices.push_back((GLfloat)z + 0.5f);
                     vertices.push_back(0.0f);
                     vertices.push_back(0.0f);
-                    vertices.push_back(-1.0f);
+                    vertices.push_back(1.0f);
                     pointCount += 6;
                 }
             }

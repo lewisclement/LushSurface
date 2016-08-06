@@ -23,6 +23,8 @@ int main() {
     startLocation.z = player.getLocation()->z;
     player.setLocation(startLocation);////Temporary
 
+    renderer->getWorld()->addEntity(&player);
+
     GLuint lastTime = SDL_GetTicks();
     while(!done) {
         GLuint currentTime = SDL_GetTicks();
@@ -66,6 +68,7 @@ int main() {
         player.processInput(currentTime - lastTime);
         renderer->lightPositions[0] = *player.getLocation();
 
+        renderer->getWorld()->processPhysics();
         renderer->render(currentTime - lastTime, currentTime);
         frameCount++;
         lastTime = currentTime;

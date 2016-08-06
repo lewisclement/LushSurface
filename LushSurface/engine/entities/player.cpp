@@ -26,7 +26,8 @@ void Player::keyInput(SDL_KeyboardEvent key) {
 void Player::processInput(GLuint deltaTime) {
     GLfloat speed = 0.02f * deltaTime;
 
-    glm::vec3 newLocation = *location;
+    btVector3 velocity = rigidBody->getLinearVelocity();
+    glm::vec3 newLocation(velocity.getX(), velocity.getY(), velocity.getZ());
 
     if(down) {
         newLocation.z -= speed;
@@ -45,13 +46,6 @@ void Player::processInput(GLuint deltaTime) {
         newLocation.x += speed;
     }
 
-    int32_t top = tempWorld->getTerrain((int32_t)newLocation.x, (int32_t)newLocation.z).top;
-    if(top >= newLocation.y) {
-        newLocation = *location;
-    } else {
-        *location = newLocation;
-    }
-
 
     if(lower) {
         newLocation.y -= speed;
@@ -60,12 +54,9 @@ void Player::processInput(GLuint deltaTime) {
         newLocation.y += speed;
     }
 
-    top = tempWorld->getTerrain((int32_t)newLocation.x, (int32_t)newLocation.z).top;
-    if(top >= newLocation.y) {
-        newLocation = *location;
-    } else {
-        *location = newLocation;
-    }
+    //*location = newLocation;
 
-    *location = newLocation;
+    //rigidBody->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), btVector3(newLocation.x, newLocation.y, newLocation.z)));
+
+    rigidBody->setLinearVelocity(btVector3(newLocation.x, newLocation.y, newLocation.z));
 }

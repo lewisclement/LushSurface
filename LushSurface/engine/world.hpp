@@ -3,6 +3,7 @@
 
 #include "../pch.hpp"
 #include "simplexnoise.hpp"
+#include "entity.hpp"
 
 const uint16_t chunkSize = 64;
 const uint8_t loadedWorldSize = 3; //3*3 = 9
@@ -26,7 +27,7 @@ public:
     Chunk(SimplexNoise *Generator);
     ~Chunk();
 
-    void initialize(int32_t x, int32_t y);
+    void initialize(int32_t x, int32_t y, btDiscreteDynamicsWorld *dynamicsWorld);
 
     void bindVBO();
 
@@ -50,6 +51,10 @@ private:
     std::vector<GLfloat> vertices;
     std::vector<uint16_t> blockHeights;
 
+    btTriangleMesh* mesh;
+    btCollisionShape* collisionShape;
+    btRigidBody* rigidBody;
+
     GLuint VAO = 0, VBO = 0;
     GLint pointCount = 0;
     bool loaded = false;
@@ -60,6 +65,9 @@ class World{
 public:
     World(float x, float y);
     ~World();
+
+    void addEntity(Entity* entity);
+    void processPhysics();
 
     bool loadTerrain(float x, float y);
 
@@ -72,6 +80,8 @@ public:
 private:
     std::vector<Chunk*> chunks;
     SimplexNoise *generator = NULL;
+
+    std::vector<Entity*> entities;
 
     btBroadphaseInterface* broadphase;
     btDefaultCollisionConfiguration* collisionConfiguration;

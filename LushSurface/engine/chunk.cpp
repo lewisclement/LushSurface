@@ -2,8 +2,6 @@
 
 Chunk::Chunk(SimplexNoise *Generator) {
     this->generator = Generator;
-
-    mesh = new btTriangleMesh();
 }
 
 Chunk::~Chunk() {
@@ -58,6 +56,7 @@ void Chunk::initialize(int32_t x, int32_t y, btDiscreteDynamicsWorld *dynamicsWo
         dynamicsWorld->removeRigidBody(rigidBody);
         delete rigidBody->getMotionState();
         delete rigidBody;
+        delete mesh;
     }
 
     xPos = x;
@@ -74,8 +73,9 @@ void Chunk::initialize(int32_t x, int32_t y, btDiscreteDynamicsWorld *dynamicsWo
     glEnableVertexAttribArray(1);
     glBindVertexArray(0);
 
-    generateChunkv2();
+    generateChunkv3();
 
+    mesh = new btTriangleMesh();
     fillVertexes();
 
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(GLfloat), &vertices[0], GL_DYNAMIC_DRAW);
@@ -133,9 +133,59 @@ void Chunk::generateChunkv2() {
     }
 }
 
+void Chunk::generateChunkv3() {
+    for(uint16_t i = 0; i < chunkSize; i++) {
+        std::vector<uint16_t> subUp;
+        worldHeightDataUpper.push_back(subUp);
+        std::vector<uint16_t> subDown;
+        worldHeightDataLower.push_back(subDown);
+
+        for(uint16_t j = 0; j < chunkSize; j++) {
+            worldHeightDataUpper[i].push_back(uint16_t(generator->scaled_raw_noise_2d(17, 25, (i + xPos * chunkSize) / 40.0f, (j + yPos * chunkSize) / 40.0f)));
+
+            int layer = int(generator->scaled_raw_noise_2d(0, 3, (i + xPos * chunkSize) / 20.0f, (j + yPos * chunkSize) / 20.0f));
+            if(layer == 2) {
+                worldHeightDataUpper[i][j] += 8;
+            } else if (layer == 1) {
+                worldHeightDataUpper[i][j] += 5;
+            }
+
+            layer = int(generator->scaled_raw_noise_2d(0, 5, (i + xPos * chunkSize) / 30.0f, (j + yPos * chunkSize) / 30.0f));
+            if(layer == 3) {
+                worldHeightDataUpper[i][j] += 2;
+            }
+
+            layer = int(generator->scaled_raw_noise_2d(0, 15, (i + xPos * chunkSize) / 60.0f, (j + yPos * chunkSize) / 60.0f));
+            if(layer == 14) {
+                worldHeightDataUpper[i][j] += 11;
+            }
+
+            layer = int(generator->scaled_raw_noise_2d(0, 15, (i + xPos * chunkSize) / 40.0f, (j + yPos * chunkSize) / 40.0f));
+            if(layer > 11 || layer < 5) {
+                worldHeightDataUpper[i][j] = 0;
+            }
+
+            layer = int(generator->scaled_raw_noise_2d(0, 8, (i + xPos * chunkSize) / 400.0f, (j + yPos * chunkSize) / 400.0f));
+            if(worldHeightDataUpper[i][j] != 0) {
+                worldHeightDataUpper[i][j] -= layer;
+            }
+
+
+            if(worldHeightDataUpper[i][j] == 0) {
+                worldHeightDataLower[i].push_back(0);
+            } else
+                worldHeightDataLower[i].push_back(uint16_t(generator->scaled_raw_noise_2d(12, worldHeightDataUpper[i][j] - 1, (i + xPos * chunkSize) / 20.0f, (j + yPos * chunkSize) / 20.0f)));
+
+
+            if(worldHeightDataLower[i][j] >= worldHeightDataUpper[i][j]) worldHeightDataUpper[i][j] = 0;
+        }
+    }
+}
+
 void Chunk::fillVertexes() {
     for(uint16_t x = 0; x < chunkSize; x++) {
         for(uint16_t z = 0; z < chunkSize; z++) {
+            if(worldHeightDataUpper[x][z] == 0) continue;
             for(uint16_t y = worldHeightDataUpper[x][z]; y >= worldHeightDataLower[x][z]; y--) {
                 if(y == worldHeightDataUpper[x][z]) {
                     vertices.push_back((GLfloat)x);

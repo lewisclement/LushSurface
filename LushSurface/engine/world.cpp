@@ -27,7 +27,7 @@ World::World(float x, float y) {
 
     // The world.
     dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-    dynamicsWorld->setGravity(btVector3(0, -10, 0));
+    dynamicsWorld->setGravity(btVector3(0, -30, 0));
 
 
 
@@ -63,8 +63,8 @@ void World::addEntity(Entity* entity) {
     dynamicsWorld->addRigidBody(entity->getRigidBody());
 }
 
-void World::processPhysics() {
-    dynamicsWorld->stepSimulation(1 / 60.0f, 10);
+void World::processPhysics(GLuint deltaTime) {
+    dynamicsWorld->stepSimulation(deltaTime, 1);
 
     for(int i = 0; i < entities.size(); i++) {
         entities[i]->actualize();

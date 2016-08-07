@@ -65,11 +65,12 @@ int main() {
             continue;
         }
 
-        player.processInput(currentTime - lastTime);
+        GLuint deltaTime = currentTime - lastTime;
+        player.processInput(deltaTime);
         renderer->lightPositions[0] = *player.getLocation();
 
-        renderer->getWorld()->processPhysics();
-        renderer->render(currentTime - lastTime, currentTime);
+        renderer->getWorld()->processPhysics(deltaTime);
+        renderer->render(deltaTime, currentTime);
         frameCount++;
         lastTime = currentTime;
     }

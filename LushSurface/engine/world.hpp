@@ -41,6 +41,7 @@ public:
 private:
     void generateChunkv1();
     void generateChunkv2();
+    void generateChunkv3();
 
     void fillVertexes();
 
@@ -67,7 +68,7 @@ public:
     ~World();
 
     void addEntity(Entity* entity);
-    void processPhysics();
+    void processPhysics(GLuint deltaTime);
 
     bool loadTerrain(float x, float y);
 

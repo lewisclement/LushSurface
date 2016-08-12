@@ -64,7 +64,7 @@ void World::addEntity(Entity* entity) {
 }
 
 void World::processPhysics(GLuint deltaTime) {
-    dynamicsWorld->stepSimulation(deltaTime, 1);
+    dynamicsWorld->stepSimulation(deltaTime, 10, 1./1000.0);
 
     for(int i = 0; i < entities.size(); i++) {
         entities[i]->actualize();

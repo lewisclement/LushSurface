@@ -4,16 +4,15 @@ Entity::Entity(unsigned long ID) {
     this->ID = ID;
     location = new glm::vec3();
 
-    shape = new btSphereShape(0.5f);
+    shape = new btSphereShape(0.2f);
 
     btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(80, 50, 80)));
-    btScalar mass = 10;
+    btScalar mass = 1;
     btVector3 fallInertia(0, 0, 0);
     shape->calculateLocalInertia(mass, fallInertia);
     btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, shape, fallInertia);
 
     rigidBody = new btRigidBody(fallRigidBodyCI);
-    rigidBody->setFriction(10);
 }
 
 

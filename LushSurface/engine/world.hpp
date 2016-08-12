@@ -42,6 +42,8 @@ private:
     void generateChunkv1();
     void generateChunkv2();
     void generateChunkv3();
+    void generateChunkv4();
+    void generateChunkv5();
 
     void fillVertexes();
 

@@ -73,7 +73,7 @@ void Chunk::initialize(int32_t x, int32_t y, btDiscreteDynamicsWorld *dynamicsWo
     glEnableVertexAttribArray(1);
     glBindVertexArray(0);
 
-    generateChunkv3();
+    generateChunkv5();
 
     mesh = new btTriangleMesh();
     fillVertexes();
@@ -83,6 +83,8 @@ void Chunk::initialize(int32_t x, int32_t y, btDiscreteDynamicsWorld *dynamicsWo
     collisionShape = new btBvhTriangleMeshShape{mesh, true};
     btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(x*chunkSize, 0, y*chunkSize)));
     btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, collisionShape, btVector3(0, 0, 0));
+    groundRigidBodyCI.m_friction = 1;
+    groundRigidBodyCI.m_rollingFriction = 0.4;
     rigidBody = new btRigidBody(groundRigidBodyCI);
     dynamicsWorld->addRigidBody(rigidBody);
 
@@ -178,6 +180,81 @@ void Chunk::generateChunkv3() {
 
 
             if(worldHeightDataLower[i][j] >= worldHeightDataUpper[i][j]) worldHeightDataUpper[i][j] = 0;
+        }
+    }
+}
+
+void Chunk::generateChunkv4() {
+    for(uint16_t i = 0; i < chunkSize; i++) {
+        std::vector<uint16_t> subUp;
+        worldHeightDataUpper.push_back(subUp);
+        std::vector<uint16_t> subDown;
+        worldHeightDataLower.push_back(subDown);
+
+        for(uint16_t j = 0; j < chunkSize; j++) {
+            worldHeightDataUpper[i].push_back(uint16_t(generator->scaled_raw_noise_2d(17, 25, (i + xPos * chunkSize) / 400.0f, (j + yPos * chunkSize) / 400.0f)));
+            uint16_t layer = uint16_t(generator->scaled_raw_noise_2d(1, 50, (i + xPos * chunkSize) / 20.0f, (j + yPos * chunkSize) / 20.0f));
+            uint16_t holeSensitivity = uint16_t(generator->scaled_raw_noise_2d(0, 10, (i + xPos * chunkSize) / 50.0f, (j + yPos * chunkSize) / 50.0f));
+
+            if(layer >= 20 && layer <= 25)
+                worldHeightDataUpper[i][j] = layer;
+            else if (layer > 25)
+                worldHeightDataUpper[i][j] = 30 + generator->scaled_raw_noise_2d(0, 5, (i + xPos * chunkSize) / 10.0f, (j + yPos * chunkSize) / 10.0f);
+            else if (layer < 10 + holeSensitivity)
+                worldHeightDataUpper[i][j] = 0;
+
+            layer = uint16_t(generator->scaled_raw_noise_2d(0, 50, (i + xPos * chunkSize) / 80.0f, (j + yPos * chunkSize) / 80.0f));
+            if(layer > 20)
+                worldHeightDataUpper[i][j] -= layer-20;
+
+            if(worldHeightDataUpper[i][j] == 0) {
+                worldHeightDataLower[i].push_back(0);
+            } else
+                worldHeightDataLower[i].push_back(uint16_t(generator->scaled_raw_noise_2d(12, worldHeightDataUpper[i][j] - 1, (i + xPos * chunkSize) / 20.0f, (j + yPos * chunkSize) / 20.0f)));
+
+
+            if(worldHeightDataLower[i][j] >= worldHeightDataUpper[i][j]) worldHeightDataUpper[i][j] = 0;
+            if(worldHeightDataUpper[i][j] > 50) worldHeightDataUpper[i][j] = 0;
+        }
+    }
+}
+
+void Chunk::generateChunkv5() {
+    for(uint16_t i = 0; i < chunkSize; i++) {
+        std::vector<uint16_t> subUp;
+        worldHeightDataUpper.push_back(subUp);
+        std::vector<uint16_t> subDown;
+        worldHeightDataLower.push_back(subDown);
+
+        for(uint16_t j = 0; j < chunkSize; j++) {
+            worldHeightDataUpper[i].push_back(0);
+            uint16_t layer = uint16_t(generator->scaled_raw_noise_2d(1, 50, (i + xPos * chunkSize) / 50.0f, (j + yPos * chunkSize) / 50.0f));
+            uint16_t holeSensitivity = uint16_t(generator->scaled_raw_noise_2d(0, 10, (i + xPos * chunkSize) / 50.0f, (j + yPos * chunkSize) / 50.0f));
+
+            if(layer >= 20 && layer <= 25)
+                worldHeightDataUpper[i][j] = layer;
+            else if (layer > 25) {
+                float diff = (layer - 25) / 10.0f;
+
+                worldHeightDataUpper[i][j] = 25 + diff * generator->scaled_raw_noise_2d(0, 5, (i + xPos * chunkSize) / 10.0f, (j + yPos * chunkSize) / 10.0f);
+            } else if (layer < 10 + holeSensitivity)
+                worldHeightDataUpper[i][j] = 0;
+            else if (layer >= 10 + holeSensitivity && layer < 20) {
+                worldHeightDataUpper[i][j] = 20;
+            }
+
+            if(worldHeightDataUpper[i][j] == 25) {
+                worldHeightDataUpper[i][j] += uint16_t(generator->scaled_raw_noise_2d(0, 3, (i + xPos * chunkSize) / 20.0f, (j + yPos * chunkSize) / 20.0f));
+            }
+
+            if(worldHeightDataUpper[i][j] == 0) {
+                worldHeightDataLower[i].push_back(0);
+            } else
+                worldHeightDataLower[i].push_back(uint16_t(generator->scaled_raw_noise_2d(12, worldHeightDataUpper[i][j] - 1, (i + xPos * chunkSize) / 20.0f, (j + yPos * chunkSize) / 20.0f)));
+
+
+            if(worldHeightDataLower[i][j] >= worldHeightDataUpper[i][j]) worldHeightDataUpper[i][j] = 0;
+            if(worldHeightDataUpper[i][j] > 50) worldHeightDataUpper[i][j] = 0;
         }
     }
 }
@@ -454,6 +531,8 @@ void Chunk::fillVertexes() {
             }
         }
     }
+
+    mesh->addTriangle(btVector3{0, 0, 0}, btVector3{0, 0, 0}, btVector3{0, 0, 0}, true);
 }
 
 GLint Chunk::getTriangleCount() {

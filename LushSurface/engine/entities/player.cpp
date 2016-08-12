@@ -24,7 +24,7 @@ void Player::keyInput(SDL_KeyboardEvent key) {
 }
 
 void Player::processInput(GLuint deltaTime) {
-    GLfloat speed = 0.002f * deltaTime;
+    GLfloat speed = 0.05f * deltaTime;
 
     btVector3 velocity = rigidBody->getLinearVelocity();
     glm::vec3 newLocation(velocity.getX(), velocity.getY(), velocity.getZ());
@@ -51,7 +51,7 @@ void Player::processInput(GLuint deltaTime) {
         newLocation.y -= speed;
     }
     if(higher) {
-        newLocation.y += speed * 30;
+        newLocation.y += speed * 5;
     }
 
     rigidBody->setLinearVelocity(btVector3(newLocation.x, newLocation.y, newLocation.z));

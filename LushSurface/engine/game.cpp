@@ -1,12 +1,24 @@
 #include "game.hpp"
 
+struct ContactSensorCallback : public btCollisionWorld::ContactResultCallback {
+    ContactSensorCallback(Player& tgtBody) : btCollisionWorld::ContactResultCallback(), body(tgtBody) {}
+
+    Player& body;
+
+    inline virtual btScalar addSingleResult(btManifoldPoint& cp,const btCollisionObjectWrapper* obj1,int id1,int index1,const btCollisionObjectWrapper* obj2,int id2,int index2) {
+        body.setCollision(true);
+
+        return 0;
+    }
+};
+
 Game::Game() {
-    view = new View();
-    glm::vec3 cameraPos = view->getCameraPos();
+    views.push_back(new View(1280, 720));
+    glm::vec3 cameraPos = views[0]->getCameraPos();
     world = new World(cameraPos.x - chunkSize / 2, cameraPos.z + chunkSize / 2);
 
     player = new Player(0);
-    view->setFocusPoint(player->getLocation());
+    views[0]->setFocusPoint(player->getLocation());
     glm::vec3 startLocation;
     startLocation.x = player->getLocation()->x;
     startLocation.y = player->getLocation()->y + 25;
@@ -17,7 +29,8 @@ Game::Game() {
 }
 
 Game::~Game() {
-    delete view;
+    for(int i = 0; i < views.size(); i++) delete views[i];
+    views.clear();
     delete player;
     delete world;
 }
@@ -26,8 +39,11 @@ bool Game::tick(GLuint deltaTime) {
     world->processPhysics(deltaTime);
     player->processInput(deltaTime);
 
-    glm::vec3 cameraPos = view->getCameraPos();
+    glm::vec3 cameraPos = views[0]->getCameraPos();
     world->loadTerrain(cameraPos.x, cameraPos.z + chunkSize / 2);
+
+    ContactSensorCallback callback(*player);
+    world->dynamicsWorld->contactTest(player->rigidBody, callback);
 
     return true;
 }
@@ -36,11 +52,27 @@ void Game::keyInput(SDL_KeyboardEvent key) {
     SDL_Keycode k = key.keysym.sym;
     if(k == SDLK_p) {
         if(key.type == SDL_KEYDOWN) {
-            View::Projection current = view->getProjectionType();
+            View::Projection current = views[0]->getProjectionType();
             if(current == View::birdseye)
-                view->setProjection(View::strategic);
+                views[0]->setProjection(View::strategic);
             else if (current == View::strategic)
-                view->setProjection(View::birdseye);
+                views[0]->setProjection(View::birdseye);
+        }
+    }
+    if(k == SDLK_o) {
+        if(key.type == SDL_KEYDOWN) {
+            if(views.size() == 1) {
+                views[0]->setViewport(640, 720);
+                views.push_back(new View(640, 720, 640, 0));
+                views[1]->setFocusPoint(player->getLocation());
+                views[1]->setProjection(View::birdseye);
+                views[1]->mouseInput(800, 200);
+            }
+            else if (views.size() > 1) {
+                delete views[1];
+                views.pop_back();
+                views[0]->setViewport(1280, 720);
+            }
         }
     }
 
@@ -63,7 +95,7 @@ void Game::keyInput(SDL_KeyboardEvent key) {
 }
 
 void Game::mouseInput(GLint relX, GLint relY) {
-    if(relX != 0 || relY != 0) view->mouseInput(relX, relY);
+    if(relX != 0 || relY != 0) views[0]->mouseInput(relX, relY);
 }
 
 glm::vec3 Game::getPlayerPos() {
@@ -76,8 +108,8 @@ glm::vec3 Game::getPlayerPos() {
     return returnLoc;
 }
 
-View* Game::getView() {
-    return view;
+std::vector<View*> Game::getViews() {
+    return views;
 }
 
 std::vector<Chunk*> Game::getChunks() {

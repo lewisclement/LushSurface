@@ -81,6 +81,8 @@ public:
     TerrainColumn getTerrain(int32_t x, int32_t y);
     std::vector<Chunk*> getChunks();
 
+    btDiscreteDynamicsWorld* dynamicsWorld;
+
 private:
     std::vector<Chunk*> chunks;
     SimplexNoise *generator = NULL;
@@ -91,7 +93,6 @@ private:
     btDefaultCollisionConfiguration* collisionConfiguration;
     btCollisionDispatcher* dispatcher;
     btSequentialImpulseConstraintSolver* solver;
-    btDiscreteDynamicsWorld* dynamicsWorld;
 };
 
 #endif // WORLD_H

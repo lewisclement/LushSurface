@@ -18,13 +18,14 @@ public:
     void mouseInput(GLint relX, GLint relY);
 
     glm::vec3 getPlayerPos();
-    View* getView();
+    std::vector<View*>  getViews();
     std::vector<Chunk*> getChunks();
 
 private:
     Player* player;
-    View* view;
-    World *world;
+    World* world;
+
+    std::vector<View*> views;
 
 };
 

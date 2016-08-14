@@ -21,8 +21,10 @@ public:
 
 
     void addChunk(Chunk* chunk);
+    void addView(View* view);
 
-    void setView(View* view);
+    void removeView(View* view);
+
     void setPlayer(glm::vec3 pos);
 
     RenderEngine();
@@ -55,7 +57,7 @@ private:
     glm::mat4 model;
 
     std::vector<Chunk*> chunks;
-    View* view;
+    std::vector<View*> views;
 };
 
 #endif // RENDERENGINE_H

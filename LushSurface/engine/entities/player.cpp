@@ -1,6 +1,6 @@
 #include "player.hpp"
 
-static bool up = false, down = false, right = false, left = false, lower = false, higher = false, jump = false;
+static bool up = false, down = false, right = false, left = false, lower = false, higher = false, jump = false, collision = false;
 
 Player::~Player() {
     delete location;
@@ -58,17 +58,17 @@ void Player::processInput(GLuint deltaTime) {
     if(higher) {
         newVelocity.y += 1.0f;
     }
+    if(jump && collision) {
+        if(newVelocity.y < 0.05f) newVelocity.y += 10.0f;
+    }
 
     rigidBody->setLinearVelocity(btVector3(newVelocity.x, newVelocity.y, newVelocity.z));
 
-    if(jump) {
-        //if(newVelocity.y < 0.05f) newVelocity.y -= 10.0f;
-        //rigidBody->applyCentralImpulse(btVector3(0,-1,0));
-        btVector3 relativeForce = btVector3(0,100,0);
-        btMatrix3x3& boxRot = rigidBody->getWorldTransform().getBasis();
-        btVector3 correctedForce = boxRot * relativeForce;
-        rigidBody->applyCentralForce(correctedForce);
-    }
+    collision = false;
+}
+
+void Player::setCollision(bool collided) {
+    collision = collided;
 }
 
 void Player::setMovement(short direction, bool movement) {

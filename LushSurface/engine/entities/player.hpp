@@ -14,9 +14,7 @@ public:
     void processInput(GLuint deltaTime);
 
     void setMovement(short direction, bool movement);
-
-private:
-    World *tempWorld; ////Temporary
+    void setCollision(bool collided);
 };
 
 #endif // PLAYER_H

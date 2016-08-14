@@ -1,11 +1,5 @@
 #include "view.hpp"
 
-View::View() {
-    focus = NULL;
-    projection = glm::ortho(-12.0f, 12.0f, -6.75f, 6.75f, 0.1f, 100.0f);
-    currentProjection = strategic;
-}
-
 View::~View() {
     focus = NULL;
 }
@@ -16,10 +10,10 @@ void View::setFocusPoint(glm::vec3 *point) {
 
 void View::setProjection(Projection p) {
     if(p == strategic) {
-        projection = glm::ortho(-12.0f, 12.0f, -6.75f, 6.75f, 0.1f, 100.0f);
+        setOrtho();
         currentProjection = strategic;
     } else if(p == birdseye) {
-        projection = glm::perspective(45.0f, (GLfloat)1280 / 720, 0.1f, 1000.0f);
+        setBirdseye();
         currentProjection = birdseye;
     }
 }
@@ -36,6 +30,19 @@ void View::setCameraFront(glm::vec3 CameraFront) {
     cameraFront.x = CameraFront.x;
     cameraFront.y = CameraFront.y;
     cameraFront.z = CameraFront.z;
+}
+
+void View::setViewport(uint16_t ViewportWidth, uint16_t ViewportHeight, uint16_t ViewportX, uint16_t ViewportY) {
+    viewportWidth = ViewportWidth;
+    viewportHeight = ViewportHeight;
+    viewportX = ViewportX;
+    viewportY = ViewportY;
+
+    if(currentProjection == strategic) {
+        setOrtho();
+    } else if(currentProjection == birdseye) {
+        setBirdseye();
+    }
 }
 
 glm::vec3 View::getCameraPos() {
@@ -106,4 +113,31 @@ void View::mouseInput(GLint relX, GLint relY) {
     front.y = float(sin(glm::radians(pitch)));
     front.z = float(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
     setCameraFront(glm::normalize(front));
+}
+
+uint16_t View::getViewPortX() {
+    return viewportX;
+}
+
+uint16_t View::getViewPortY() {
+    return viewportY;
+}
+
+uint16_t View::getViewPortWidth() {
+    return viewportWidth;
+}
+
+uint16_t View::getViewPortHeight() {
+    return viewportHeight;
+}
+
+void View::setOrtho() {
+    double amount = std::max(viewportWidth, viewportHeight) / orthoRatio;
+    float width = viewportWidth / amount;
+    float height = viewportHeight / amount;
+    projection = glm::ortho(-width, width, -height, height, 0.1f, 100.0f);
+}
+
+void View::setBirdseye() {
+    projection = glm::perspective(45.0f, (GLfloat)viewportWidth / viewportHeight, 0.1f, 1000.0f);
 }

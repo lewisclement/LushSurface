@@ -61,7 +61,9 @@ int main() {
         GLuint deltaTime = currentTime - lastTime;
         game->tick(deltaTime);
         renderer->setPlayer(game->getPlayerPos());
-        renderer->setView(game->getView());
+
+        auto views = game->getViews();
+        for(int i = 0; i < views.size(); i++) renderer->addView(views[i]);
 
         std::vector<Chunk*> chunks = game->getChunks();
         for(int i = 0; i < chunks.size(); i++) {

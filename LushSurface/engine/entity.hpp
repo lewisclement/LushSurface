@@ -15,13 +15,14 @@ public:
 
     glm::vec3 * getLocation();
 
+    btRigidBody* rigidBody;
+
 private:
     unsigned long ID = 0;
     btCollisionShape* shape;
 
 protected:
     glm::vec3 *location;
-    btRigidBody* rigidBody;
 };
 
 #endif

@@ -73,7 +73,7 @@ void Chunk::initialize(int32_t x, int32_t y, btDiscreteDynamicsWorld *dynamicsWo
     glEnableVertexAttribArray(1);
     glBindVertexArray(0);
 
-    generateChunkv5();
+    generateChunkv3();
 
     mesh = new btTriangleMesh();
     fillVertexes();
@@ -83,8 +83,10 @@ void Chunk::initialize(int32_t x, int32_t y, btDiscreteDynamicsWorld *dynamicsWo
     collisionShape = new btBvhTriangleMeshShape{mesh, true};
     btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(x*chunkSize, 0, y*chunkSize)));
     btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, collisionShape, btVector3(0, 0, 0));
+    groundRigidBodyCI.m_linearDamping = 100;
+    groundRigidBodyCI.m_angularDamping = 100;
     groundRigidBodyCI.m_friction = 1;
-    groundRigidBodyCI.m_rollingFriction = 0.4;
+    groundRigidBodyCI.m_rollingFriction = 0.4f;
     rigidBody = new btRigidBody(groundRigidBodyCI);
     dynamicsWorld->addRigidBody(rigidBody);
 
@@ -199,7 +201,7 @@ void Chunk::generateChunkv4() {
             if(layer >= 20 && layer <= 25)
                 worldHeightDataUpper[i][j] = layer;
             else if (layer > 25)
-                worldHeightDataUpper[i][j] = 30 + generator->scaled_raw_noise_2d(0, 5, (i + xPos * chunkSize) / 10.0f, (j + yPos * chunkSize) / 10.0f);
+                worldHeightDataUpper[i][j] = uint16_t(30 + generator->scaled_raw_noise_2d(0, 5, (i + xPos * chunkSize) / 10.0f, (j + yPos * chunkSize) / 10.0f));
             else if (layer < 10 + holeSensitivity)
                 worldHeightDataUpper[i][j] = 0;
 
@@ -236,7 +238,7 @@ void Chunk::generateChunkv5() {
             else if (layer > 25) {
                 float diff = (layer - 25) / 10.0f;
 
-                worldHeightDataUpper[i][j] = 25 + diff * generator->scaled_raw_noise_2d(0, 5, (i + xPos * chunkSize) / 10.0f, (j + yPos * chunkSize) / 10.0f);
+                worldHeightDataUpper[i][j] = uint16_t(25 + diff * generator->scaled_raw_noise_2d(0, 5, (i + xPos * chunkSize) / 10.0f, (j + yPos * chunkSize) / 10.0f));
             } else if (layer < 10 + holeSensitivity)
                 worldHeightDataUpper[i][j] = 0;
             else if (layer >= 10 + holeSensitivity && layer < 20) {
@@ -531,8 +533,6 @@ void Chunk::fillVertexes() {
             }
         }
     }
-
-    mesh->addTriangle(btVector3{0, 0, 0}, btVector3{0, 0, 0}, btVector3{0, 0, 0}, true);
 }
 
 GLint Chunk::getTriangleCount() {

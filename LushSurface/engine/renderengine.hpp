@@ -16,23 +16,22 @@ public:
     bool initialize(GLuint width = MIN_WIDTH, GLuint height = MIN_HEIGHT);
 
     void render(GLuint deltaTime = 0, GLuint ticks = 0);
-    void mouseInput(GLint relX, GLint relY);
     void keyInput(SDL_KeyboardEvent key);
     void processInput(GLuint deltaTime);
 
-    View getView();
 
-    World * getWorld(); ////Temporary
+    void addChunk(Chunk* chunk);
+
+    void setView(View* view);
+    void setPlayer(glm::vec3 pos);
 
     RenderEngine();
     ~RenderEngine();
 
     SDL_Keysym lastKey;
 
-    View *view;
-
     //Temporary
-    glm::vec3 lightPositions[4];
+
 
 private:
     bool initializeGL();
@@ -42,7 +41,8 @@ private:
     SDL_GLContext glcontext;
 
     Shader *lightingShader, *lampShader;
-    World *world;
+
+    glm::vec3 lightPositions[4];
 
     GLuint windowWidth = MIN_WIDTH;
     GLuint windowHeight = MIN_HEIGHT;
@@ -53,6 +53,9 @@ private:
 
     glm::mat4 trans;
     glm::mat4 model;
+
+    std::vector<Chunk*> chunks;
+    View* view;
 };
 
 #endif // RENDERENGINE_H

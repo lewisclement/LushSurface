@@ -4,8 +4,6 @@ bool RenderEngine::initialize(GLuint width, GLuint height) {
     windowWidth = width;
     windowHeight = height;
 
-    view = new View();
-
     if(!initializeGL()) {
         std::cout << "Could not initialize OpenGL window" << std::endl;
         return false;
@@ -119,9 +117,7 @@ bool RenderEngine::initializeScene() {
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    //glGenBuffers(1, &EBO);
-    glm::vec3 cameraPos = view->getCameraPos();
-    world = new World(cameraPos.x - chunkSize / 2, cameraPos.z + chunkSize / 2);
+
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -154,48 +150,19 @@ bool RenderEngine::initializeScene() {
     return true;
 }
 
-void RenderEngine::mouseInput(GLint relX, GLint relY) {
-    //For testing purposes
-
-    if(!(SDL_GetWindowFlags(screen) & SDL_WINDOW_MOUSE_FOCUS)) return;
-
-    view->setYaw(view->getYaw() + relX / 10.0f);
-    view->setPitch(view->getPitch() + -relY / 10.0f);
-
-    GLfloat yaw = view->getYaw();
-    GLfloat pitch = view->getPitch();
-
-    if(pitch > 89.0f) {view->setPitch(89.0f);}
-    else if(pitch < -89.0f) {view->setPitch(-89.0f);}
-
-    glm::vec3 front;
-    front.x = float(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
-    front.y = float(sin(glm::radians(pitch)));
-    front.z = float(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
-    view->setCameraFront(glm::normalize(front));
+void RenderEngine::setView(View* view) {
+    this->view = view;
 }
 
-void RenderEngine::keyInput(SDL_KeyboardEvent key) {
-    SDL_Keycode k = key.keysym.sym;
-    if(k == SDLK_p) {
-        if(key.type == SDL_KEYDOWN) {
-            View::Projection current = view->getProjectionType();
-            if(current == View::birdseye)
-                view->setProjection(View::strategic);
-            else if (current == View::strategic)
-                view->setProjection(View::birdseye);
-        }
-    }
+void RenderEngine::setPlayer(glm::vec3 pos) {
+    lightPositions[0] = pos;
 }
 
-void RenderEngine::processInput(GLuint deltaTime) {
-    glm::vec3 cameraPos = view->getCameraPos();
-    world->loadTerrain(cameraPos.x, cameraPos.z + chunkSize / 2);
+void RenderEngine::addChunk(Chunk* chunk) {
+    chunks.push_back(chunk);
 }
 
 void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
-    processInput(deltaTime);
-
     glClearColor(0.8f, 0.85f, 0.95f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -290,15 +257,23 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
 
     glBindVertexArray(VAO);
 
-    std::vector<Coordinate> coords = world->getChunkCoordinates();
+    std::vector<Coordinate> coords;
+    for(unsigned long i = 0; i < chunks.size(); i++) {
+        coords.push_back(chunks[i]->getPosition());
+    }
 
-    for(unsigned long chunk = 0; chunk < coords.size(); chunk++) {
-        model = glm::translate(glm::mat4(), glm::vec3(coords[chunk].x * chunkSize, 0.0f, coords[chunk].y * chunkSize));
+    for(unsigned long i = 0; i < coords.size(); i++) {
+        model = glm::translate(glm::mat4(), glm::vec3(coords[i].x * chunkSize, 0.0f, coords[i].y * chunkSize));
         glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
         glm::mat3 normalModel = glm::inverseTranspose(glm::mat3(model));
         glUniformMatrix3fv(normalModelLocation, 1, GL_FALSE, glm::value_ptr(normalModel));
 
-        Chunk *c = world->getChunk(coords[chunk].x, coords[chunk].y);
+        Chunk *c = NULL;
+        for(unsigned long j = 0; j < chunks.size(); j++) {
+            Coordinate pos = chunks[j]->getPosition();
+            if(pos.x == coords[i].x && pos.y == coords[i].y) {c = chunks[i]; break;}
+        }
+
         c->bindVBO();
         glDrawArrays(GL_TRIANGLES, 0, c->getTriangleCount());
     }
@@ -329,10 +304,10 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
     glBindVertexArray(0);
 
     SDL_GL_SwapWindow(screen);
-}
 
-View RenderEngine::getView() {
-    return *view;
+    //Cleanup
+    chunks.clear();
+    view = nullptr;
 }
 
 RenderEngine::RenderEngine() {
@@ -340,12 +315,6 @@ RenderEngine::RenderEngine() {
 
 RenderEngine::~RenderEngine() {
     delete[] textures;
-    delete world;
-    delete view;
     delete lightingShader;
     delete lampShader;
-}
-
-World * RenderEngine::getWorld() {
-    return world;
 }

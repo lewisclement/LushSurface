@@ -93,3 +93,17 @@ void View::updateCameraPos() {
         cameraPos.z -= 10.0f;
     } else return;
 }
+
+void View::mouseInput(GLint relX, GLint relY) {
+    yaw += relX / 10.0f;
+    pitch += -relY / 10.0f;
+
+    if(pitch > 89.0f) pitch = 89.0f;
+    else if(pitch < -89.0f) pitch = -89.0f;
+
+    glm::vec3 front;
+    front.x = float(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
+    front.y = float(sin(glm::radians(pitch)));
+    front.z = float(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
+    setCameraFront(glm::normalize(front));
+}

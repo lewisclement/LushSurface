@@ -2,7 +2,7 @@
 
 Entity::Entity(unsigned long ID) {
     this->ID = ID;
-    location = new glm::vec3();
+    location = new glm::vec3(80, 50, 80);
 
     shape = new btSphereShape(0.2f);
 
@@ -13,6 +13,7 @@ Entity::Entity(unsigned long ID) {
     btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, shape, fallInertia);
 
     rigidBody = new btRigidBody(fallRigidBodyCI);
+    rigidBody->setRollingFriction(1);
 }
 
 
@@ -26,6 +27,8 @@ void Entity::setLocation(glm::vec3 Location) {
     location->x = Location.x;
     location->y = Location.y;
     location->z = Location.z;
+
+    rigidBody->setWorldTransform(btTransform(btQuaternion(0, 0, 0, 1), btVector3(Location.x, Location.y, Location.z)));
 }
 
 void Entity::actualize() {

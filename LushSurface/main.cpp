@@ -1,11 +1,14 @@
 #include "pch.hpp"
 
+#include "engine/game.hpp"
 #include "engine/renderengine.hpp"
+#include "engine/view.hpp"
 #include "engine/entities/player.hpp"
 
 #include "engine/world.hpp"
 
 static RenderEngine* renderer;
+static Game* game;
 static GLulong frameCount = 0;
 static GLuint frameRate = 60;
 
@@ -15,15 +18,7 @@ int main() {
 
     if(!renderer->initialize()) return 1;
 
-    Player player(0, renderer->getWorld());////Temporary
-    renderer->view->setFocusPoint(player.getLocation());////Temporary
-    glm::vec3 startLocation;
-    startLocation.x = player.getLocation()->x;
-    startLocation.y = player.getLocation()->y + 25;
-    startLocation.z = player.getLocation()->z;
-    player.setLocation(startLocation);////Temporary
-
-    renderer->getWorld()->addEntity(&player);
+    game = new Game();
 
     GLuint lastTime = SDL_GetTicks();
     while(!done) {
@@ -41,21 +36,19 @@ int main() {
                         done = true;
                         break;
                     } else {
-                        renderer->keyInput(event.key);
-                        player.keyInput(event.key);
+                        game->keyInput(event.key);
                     }
                     break;
                 }
                 case SDL_KEYUP: {
-                    renderer->keyInput(event.key);
-                    player.keyInput(event.key);
+                    game->keyInput(event.key);
                     break;
                 }
                 case SDL_MOUSEMOTION: {
                     int x, y;
                     SDL_GetRelativeMouseState(&x, &y);
 
-                    if(x != 0 || y != 0) renderer->mouseInput(x, y);
+                    game->mouseInput(x, y);
                     break;
                 }
             }
@@ -66,10 +59,15 @@ int main() {
         }
 
         GLuint deltaTime = currentTime - lastTime;
-        player.processInput(deltaTime);
-        renderer->lightPositions[0] = *player.getLocation();
+        game->tick(deltaTime);
+        renderer->setPlayer(game->getPlayerPos());
+        renderer->setView(game->getView());
 
-        renderer->getWorld()->processPhysics(deltaTime);
+        std::vector<Chunk*> chunks = game->getChunks();
+        for(int i = 0; i < chunks.size(); i++) {
+            renderer->addChunk(chunks[i]);
+        }
+
         renderer->render(deltaTime, currentTime);
         frameCount++;
         lastTime = currentTime;

@@ -30,6 +30,7 @@ public:
     Projection getProjectionType();
 
     void moveCamera(short direction, GLfloat distance);
+    void mouseInput(GLint relX, GLint relY);
 
 private:
     glm::vec3 *focus;

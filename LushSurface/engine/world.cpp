@@ -143,16 +143,6 @@ Chunk* World::getChunk(int32_t x, int32_t y) {
     return returnChunk;
 }
 
-std::vector<Coordinate> World::getChunkCoordinates() {
-    std::vector<Coordinate> coords;
-
-    for(unsigned long i = 0; i < chunks.size(); i++) {
-        coords.push_back(chunks[i]->getPosition());
-    }
-
-    return coords;
-}
-
 TerrainColumn World::getTerrain(int32_t x, int32_t y) {
     int32_t chunkX = int32_t(x / chunkSize);
     int32_t chunkY = int32_t(y / chunkSize);
@@ -170,4 +160,8 @@ TerrainColumn World::getTerrain(int32_t x, int32_t y) {
     }
 
     return getChunk(chunkX, chunkY)->getTerrain(relativeX, relativeY);
+}
+
+std::vector<Chunk*> World::getChunks() {
+    return chunks;
 }

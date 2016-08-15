@@ -10,41 +10,118 @@ void Player::activate() {
     rigidBody->activate();
 }
 
-void Player::processInput(GLuint deltaTime) {
+void Player::processInput(GLuint deltaTime, glm::vec3 cameraFront) {
     GLfloat speed = 0.05f * deltaTime;
     GLfloat maxSpeed = 10.0f;
-    double degrees = 45 * (M_PI / 180);
 
     btVector3 velocity = rigidBody->getLinearVelocity();
     glm::vec3 newVelocity(velocity.getX(), 0, velocity.getZ());
 
+    double degrees = glm::radians(45.0);
+
     if(down && left) {
-        newVelocity.z -= speed;
+        if(cameraFront.z > 0 && cameraFront.x > 0)
+            newVelocity.z -= speed;
+        else if(cameraFront.z > 0 && cameraFront.x < 0)
+            newVelocity.x += speed;
+        else if(cameraFront.z < 0 && cameraFront.x < 0)
+            newVelocity.z += speed;
+        else if(cameraFront.z < 0 && cameraFront.x > 0)
+            newVelocity.x -= speed;
     }
     else if(down && right) {
-        newVelocity.x -= speed;
+        if(cameraFront.z > 0 && cameraFront.x > 0)
+            newVelocity.x -= speed;
+        else if(cameraFront.z > 0 && cameraFront.x < 0)
+            newVelocity.z -= speed;
+        else if(cameraFront.z < 0 && cameraFront.x < 0)
+            newVelocity.x += speed;
+        else if(cameraFront.z < 0 && cameraFront.x > 0)
+            newVelocity.z += speed;
     }
     else if(up && left) {
-        newVelocity.x += speed;
+        if(cameraFront.z > 0 && cameraFront.x > 0)
+            newVelocity.x += speed;
+        else if(cameraFront.z > 0 && cameraFront.x < 0)
+            newVelocity.z += speed;
+        else if(cameraFront.z < 0 && cameraFront.x < 0)
+            newVelocity.x -= speed;
+        else if(cameraFront.z < 0 && cameraFront.x > 0)
+            newVelocity.z -= speed;
     }
     else if(up && right) {
-        newVelocity.z += speed;
+        if(cameraFront.z > 0 && cameraFront.x > 0)
+            newVelocity.z += speed;
+        else if(cameraFront.z > 0 && cameraFront.x < 0)
+            newVelocity.x -= speed;
+        else if(cameraFront.z < 0 && cameraFront.x < 0)
+            newVelocity.z -= speed;
+        else if(cameraFront.z < 0 && cameraFront.x > 0)
+            newVelocity.x += speed;
     }
     else if(up) {
-        newVelocity.z += speed * std::sin(degrees);
-        newVelocity.x += speed * std::cos(degrees);
+        if(cameraFront.z > 0)
+            newVelocity.z += speed * std::sin(degrees);
+        else
+            newVelocity.z -= speed * std::sin(degrees);
+
+        if(cameraFront.x > 0)
+            newVelocity.x += speed * std::cos(degrees);
+        else
+            newVelocity.x -= speed * std::cos(degrees);
     }
     else if(down) {
-        newVelocity.z -= speed * std::sin(degrees);
-        newVelocity.x -= speed * std::cos(degrees);
+        if(cameraFront.z > 0)
+            newVelocity.z -= speed * std::sin(degrees);
+        else
+            newVelocity.z += speed * std::sin(degrees);
+
+        if(cameraFront.x > 0)
+            newVelocity.x -= speed * std::cos(degrees);
+        else
+            newVelocity.x += speed * std::cos(degrees);
     }
     else if(right) {
-        newVelocity.z += speed * std::sin(degrees);
-        newVelocity.x -= speed * std::cos(degrees);
+        if(cameraFront.z < 0 && cameraFront.x > 0 || cameraFront.z > 0 && cameraFront.x < 0) {
+            if(cameraFront.z > 0) {
+                newVelocity.z -= speed * std::sin(degrees);
+                newVelocity.x -= speed * std::cos(degrees);
+            } else {
+                newVelocity.z += speed * std::sin(degrees);
+                newVelocity.x += speed * std::cos(degrees);
+            }
+        }
+
+        if(cameraFront.z > 0 && cameraFront.x > 0 || cameraFront.z < 0 && cameraFront.x < 0) {
+            if(cameraFront.z > 0) {
+                newVelocity.z += speed * std::sin(degrees);
+                newVelocity.x -= speed * std::cos(degrees);
+            } else {
+                newVelocity.z -= speed * std::sin(degrees);
+                newVelocity.x += speed * std::cos(degrees);
+            }
+        }
     }
     else if(left) {
-        newVelocity.z -= speed * std::sin(degrees);
-        newVelocity.x += speed * std::cos(degrees);
+        if(cameraFront.z < 0 && cameraFront.x > 0 || cameraFront.z > 0 && cameraFront.x < 0) {
+            if(cameraFront.z > 0) {
+                newVelocity.z += speed * std::sin(degrees);
+                newVelocity.x += speed * std::cos(degrees);
+            } else {
+                newVelocity.z -= speed * std::sin(degrees);
+                newVelocity.x -= speed * std::cos(degrees);
+            }
+        }
+
+        if(cameraFront.z > 0 && cameraFront.x > 0 || cameraFront.z < 0 && cameraFront.x < 0) {
+            if(cameraFront.z > 0) {
+                newVelocity.z -= speed * std::sin(degrees);
+                newVelocity.x += speed * std::cos(degrees);
+            } else {
+                newVelocity.z += speed * std::sin(degrees);
+                newVelocity.x -= speed * std::cos(degrees);
+            }
+        }
     }
 
     double length = glm::length(newVelocity);

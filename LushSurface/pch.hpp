@@ -42,6 +42,7 @@
 #include "../glm/glm/gtc/type_ptr.hpp"
 #include "../glm/glm/gtc/matrix_transform.hpp"
 #include "../glm/glm/gtc/matrix_inverse.hpp"
+#include "../glm/glm/gtx/vector_angle.hpp"
 
 #include "btBulletDynamicsCommon.h"
 

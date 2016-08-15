@@ -5,7 +5,7 @@ struct ContactSensorCallback : public btCollisionWorld::ContactResultCallback {
 
     Player& body;
 
-    inline virtual btScalar addSingleResult(btManifoldPoint& cp,const btCollisionObjectWrapper* obj1,int id1,int index1,const btCollisionObjectWrapper* obj2,int id2,int index2) {
+    virtual btScalar addSingleResult(btManifoldPoint& cp,const btCollisionObjectWrapper* obj1,int id1,int index1,const btCollisionObjectWrapper* obj2,int id2,int index2) {
         body.setCollision(true);
 
         return 0;
@@ -13,7 +13,7 @@ struct ContactSensorCallback : public btCollisionWorld::ContactResultCallback {
 };
 
 Game::Game() {
-    views.push_back(new View(1280, 720));
+    views.push_back(new View(MINRESX, MINRESY));
     glm::vec3 cameraPos = views[0]->getCameraPos();
     world = new World(cameraPos.x - chunkSize / 2, cameraPos.z + chunkSize / 2);
 
@@ -37,8 +37,9 @@ Game::~Game() {
 
 bool Game::tick(GLuint deltaTime) {
     world->processPhysics(deltaTime);
-    player->processInput(deltaTime);
+    player->processInput(deltaTime, views[0]->getCameraFront());
 
+    views[0]->updateCameraPos(deltaTime);
     glm::vec3 cameraPos = views[0]->getCameraPos();
     world->loadTerrain(cameraPos.x, cameraPos.z + chunkSize / 2);
 
@@ -59,11 +60,11 @@ void Game::keyInput(SDL_KeyboardEvent key) {
                 views[0]->setProjection(View::birdseye);
         }
     }
-    if(k == SDLK_o) {
+    else if(k == SDLK_o) {
         if(key.type == SDL_KEYDOWN) {
             if(views.size() == 1) {
-                views[0]->setViewport(640, 720);
-                views.push_back(new View(640, 720, 640, 0));
+                views[0]->setViewport(MINRESX/2, MINRESY);
+                views.push_back(new View(MINRESX/2, MINRESY, MINRESX/2, 0));
                 views[1]->setFocusPoint(player->getLocation());
                 views[1]->setProjection(View::birdseye);
                 views[1]->mouseInput(800, 200);
@@ -71,9 +72,15 @@ void Game::keyInput(SDL_KeyboardEvent key) {
             else if (views.size() > 1) {
                 delete views[1];
                 views.pop_back();
-                views[0]->setViewport(1280, 720);
+                views[0]->setViewport(MINRESX, MINRESY);
             }
         }
+    }
+
+    else if(k == SDLK_RIGHT) {
+        if(key.type == SDL_KEYDOWN) views[0]->turnRight();
+    } else if(k == SDLK_LEFT) {
+        if(key.type == SDL_KEYDOWN) views[0]->turnLeft();
     }
 
     else if(k == SDLK_DOWN || k == SDLK_s) {

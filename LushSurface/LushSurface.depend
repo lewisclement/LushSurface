@@ -548,7 +548,7 @@
 	"simplexnoise.hpp"
 	"entity.hpp"
 
-1470497936 /home/lewis/Documents/Programming/LushSurface/LushSurface/pch.hpp
+1471259456 /home/lewis/Documents/Programming/LushSurface/LushSurface/pch.hpp
 	<iostream>
 	<fstream>
 	<stdio.h>
@@ -566,6 +566,7 @@
 	"../glm/glm/gtc/type_ptr.hpp"
 	"../glm/glm/gtc/matrix_transform.hpp"
 	"../glm/glm/gtc/matrix_inverse.hpp"
+	"../glm/glm/gtx/vector_angle.hpp"
 	"btBulletDynamicsCommon.h"
 
 1451764591 /home/lewis/Documents/Programming/LushSurface/LushSurface/SDL2/SDL.h
@@ -1376,7 +1377,7 @@
 1471179265 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/entities/player.cpp
 	"player.hpp"
 
-1471182228 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/entities/player.hpp
+1471255516 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/entities/player.hpp
 	"../../pch.hpp"
 	"../entity.hpp"
 	"../world.hpp"
@@ -1394,20 +1395,22 @@
 	"../pch.hpp"
 	"entity.hpp"
 
-1471186965 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/renderengine.cpp
+1471199373 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/renderengine.cpp
 	"renderengine.hpp"
 
-1471185543 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/renderengine.hpp
+1471198353 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/renderengine.hpp
 	"../pch.hpp"
 	"shader.hpp"
 	"world.hpp"
 	"view.hpp"
+	"../globals.hpp"
 
 1455459688 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/shader.hpp
 	"../pch.hpp"
 
-1471189725 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/view.hpp
+1471207105 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/view.hpp
 	"../pch.hpp"
+	"../globals.hpp"
 
 1455459688 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/shader.cpp
 	"shader.hpp"
@@ -1416,7 +1419,7 @@
 	"../pch.hpp"
 	"simplexnoise.hpp"
 
-1471188354 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/view.cpp
+1471207320 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/view.cpp
 	"view.hpp"
 
 1471086649 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/world.cpp
@@ -1974,6 +1977,62 @@
 	"view.hpp"
 	"entities/player.hpp"
 
-1471188784 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/game.cpp
+1471255500 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/game.cpp
 	"game.hpp"
+
+1471207579 /home/lewis/Documents/Programming/LushSurface/LushSurface/globals.hpp
+
+1468694849 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtx/vector_angle.hpp
+	"../glm.hpp"
+	"../gtc/epsilon.hpp"
+	"../gtx/quaternion.hpp"
+	"../gtx/rotate_vector.hpp"
+	"vector_angle.inl"
+
+1468694848 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtc/epsilon.hpp
+	"../detail/setup.hpp"
+	"../detail/precision.hpp"
+	"epsilon.inl"
+
+1468694848 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtc/epsilon.inl
+	"quaternion.hpp"
+	"../vector_relational.hpp"
+	"../common.hpp"
+	"../vec2.hpp"
+	"../vec3.hpp"
+	"../vec4.hpp"
+
+1468694849 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtx/quaternion.hpp
+	"../glm.hpp"
+	"../gtc/constants.hpp"
+	"../gtc/quaternion.hpp"
+	"../gtx/norm.hpp"
+	"quaternion.inl"
+
+1468694849 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtx/norm.hpp
+	"../glm.hpp"
+	"../gtx/quaternion.hpp"
+	"norm.inl"
+
+1468694849 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtx/norm.inl
+
+1468694849 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtx/quaternion.inl
+	<limits>
+	"../gtc/constants.hpp"
+
+1468694849 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtx/rotate_vector.hpp
+	"../glm.hpp"
+	"../gtx/transform.hpp"
+	"rotate_vector.inl"
+
+1468694849 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtx/transform.hpp
+	"../glm.hpp"
+	"../gtc/matrix_transform.hpp"
+	"transform.inl"
+
+1468694849 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtx/transform.inl
+
+1468694849 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtx/rotate_vector.inl
+
+1468694849 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtx/vector_angle.inl
 

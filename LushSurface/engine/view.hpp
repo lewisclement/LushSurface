@@ -2,8 +2,7 @@
 #define VIEW_H
 
 #include "../pch.hpp"
-
-const double orthoRatio = 15.0; //Amount of blocks fitting in greatest screen dimension
+#include "../globals.hpp"
 
 class View {
 public:
@@ -12,7 +11,7 @@ public:
     View(uint16_t ViewportWidth, uint16_t ViewportHeight, uint16_t ViewportX = 0, uint16_t ViewportY = 0) : viewportWidth(ViewportWidth), viewportHeight(ViewportHeight), viewportX(ViewportX), viewportY(ViewportY)
     {
         focus = NULL;
-        projection = glm::ortho(-12.0f, 12.0f, -6.75f, 6.75f, 0.1f, 100.0f);
+        setOrtho();
         currentProjection = strategic;
     }
     ~View();
@@ -23,6 +22,9 @@ public:
     void setPitch(GLfloat Pitch);
     void setCameraFront(glm::vec3 CameraFront);
     void setViewport(uint16_t ViewportWidth, uint16_t ViewportHeight, uint16_t ViewportX = 0, uint16_t ViewportY = 0);
+
+    void turnLeft();
+    void turnRight();
 
     glm::vec3 getFocusPoint();
 
@@ -42,6 +44,8 @@ public:
 
     Projection getProjectionType();
 
+    void updateCameraPos(GLuint deltaTime);
+
     void moveCamera(short direction, GLfloat distance);
     void mouseInput(GLint relX, GLint relY);
 
@@ -52,6 +56,9 @@ private:
     glm::vec3 cameraFront = glm::vec3(3.0f, -3.0f, 3.0f);
     glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
+    glm::vec3 cameraTurn  = glm::vec3(0.0f, 0.0f, 0.0f);
+    GLuint updateTick = 0;
+
     glm::mat4 view;
     glm::mat4 projection;
 
@@ -61,7 +68,7 @@ private:
 
     uint16_t viewportX, viewportY, viewportWidth, viewportHeight;
 
-    void updateCameraPos();
+    void updateCameraFront();
 
     void setOrtho();
     void setBirdseye();

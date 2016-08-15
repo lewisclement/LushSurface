@@ -174,10 +174,6 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
         glViewport((*view)->getViewPortX(), (*view)->getViewPortY(), (*view)->getViewPortWidth(), (*view)->getViewPortHeight());
         lightingShader->activate();
 
-        //glActiveTexture(GL_TEXTURE0);
-        //glBindTexture(GL_TEXTURE_2D, textures[0]);
-
-        //glm::vec3 lightPos = glm::vec3(1.2f, 1.0f, fmod(ticks / 100.0f, 50.0f) - 40.0f);
         lightPositions[1] = glm::vec3(0, 0, 0);
         lightPositions[2] = glm::vec3(0, 0, 0);
         lightPositions[3] = glm::vec3(0, 0, 0);
@@ -186,7 +182,7 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
         GLint matSpecularLoc = glGetUniformLocation(lightingShader->programID, "material.specular");
         GLint matShineLoc = glGetUniformLocation(lightingShader->programID, "material.shininess");
 
-        glUniform3f(matDiffuseLoc, 1.0f, 0.8f, 0.8f);
+        glUniform3f(matDiffuseLoc, 0.9f, 0.8f, 0.6f);
         glUniform3f(matSpecularLoc, 0.5f, 0.5f, 0.5f);
         glUniform1f(matShineLoc, 32.0f);
 

@@ -11,7 +11,7 @@ public:
     ~Player();
 
     void activate();
-    void processInput(GLuint deltaTime);
+    void processInput(GLuint deltaTime, glm::vec3 cameraFront);
 
     void setMovement(short direction, bool movement);
     void setCollision(bool collided);

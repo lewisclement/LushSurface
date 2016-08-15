@@ -5,15 +5,13 @@
 #include "shader.hpp"
 #include "world.hpp"
 #include "view.hpp"
+#include "../globals.hpp"
 
 #pragma clang diagnostic ignored "-Wpadded"
 
-#define MIN_WIDTH 1280
-#define MIN_HEIGHT 720
-
 class RenderEngine{
 public:
-    bool initialize(GLuint width = MIN_WIDTH, GLuint height = MIN_HEIGHT);
+    bool initialize(GLuint width = MINRESX, GLuint height = MINRESY);
 
     void render(GLuint deltaTime = 0, GLuint ticks = 0);
     void keyInput(SDL_KeyboardEvent key);
@@ -46,8 +44,8 @@ private:
 
     glm::vec3 lightPositions[4];
 
-    GLuint windowWidth = MIN_WIDTH;
-    GLuint windowHeight = MIN_HEIGHT;
+    GLuint windowWidth = MINRESX;
+    GLuint windowHeight = MINRESY;
     GLuint* textures;
 
     GLuint VAO, lightVAO; //VAO's

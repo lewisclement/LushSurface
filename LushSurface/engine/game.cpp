@@ -39,7 +39,9 @@ bool Game::tick(GLuint deltaTime) {
     world->processPhysics(deltaTime);
     player->processInput(deltaTime, views[0]->getCameraFront());
 
-    views[0]->updateCameraPos(deltaTime);
+    for(int i = 0; i < views.size(); i++)
+        views[i]->updateCameraPos(deltaTime);
+
     glm::vec3 cameraPos = views[0]->getCameraPos();
     world->loadTerrain(cameraPos.x, cameraPos.z + chunkSize / 2);
 
@@ -66,7 +68,7 @@ void Game::keyInput(SDL_KeyboardEvent key) {
                 views[0]->setViewport(MINRESX/2, MINRESY);
                 views.push_back(new View(MINRESX/2, MINRESY, MINRESX/2, 0));
                 views[1]->setFocusPoint(player->getLocation());
-                views[1]->setProjection(View::birdseye);
+                views[1]->setProjection(View::strategic);
                 views[1]->mouseInput(800, 200);
             }
             else if (views.size() > 1) {

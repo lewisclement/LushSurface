@@ -34,11 +34,8 @@ World::World(float x, float y) {
     int32_t centerChunkX = int32_t(x / chunkSize);
     int32_t centerChunkY = int32_t(y / chunkSize);
 
-    generator = new SimplexNoise();
-    generator->setSeed(34142345);
-
     for(int i = 0; i < loadedWorldSize * loadedWorldSize; i++) {
-        Chunk *chunk = new Chunk(generator);
+        Chunk *chunk = new Chunk(34142345);
         chunk->initialize(centerChunkX + i % 3 - 1, centerChunkY + int(i / 3) - 1, dynamicsWorld);
         chunks.push_back(chunk);
     }
@@ -48,8 +45,6 @@ World::~World() {
     for(unsigned long i = 0; i < chunks.size(); i++) {
         delete chunks[i];
     }
-
-    delete generator;
 
     delete dynamicsWorld;
     delete solver;

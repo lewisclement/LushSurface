@@ -82,7 +82,7 @@ void Player::processInput(GLuint deltaTime, glm::vec3 cameraFront) {
             newVelocity.x += speed * std::cos(degrees);
     }
     else if(right) {
-        if(cameraFront.z < 0 && cameraFront.x > 0 || cameraFront.z > 0 && cameraFront.x < 0) {
+        if((cameraFront.z < 0 && cameraFront.x > 0) || (cameraFront.z > 0 && cameraFront.x < 0)) {
             if(cameraFront.z > 0) {
                 newVelocity.z -= speed * std::sin(degrees);
                 newVelocity.x -= speed * std::cos(degrees);
@@ -92,7 +92,7 @@ void Player::processInput(GLuint deltaTime, glm::vec3 cameraFront) {
             }
         }
 
-        if(cameraFront.z > 0 && cameraFront.x > 0 || cameraFront.z < 0 && cameraFront.x < 0) {
+        if((cameraFront.z > 0 && cameraFront.x > 0) || (cameraFront.z < 0 && cameraFront.x < 0)) {
             if(cameraFront.z > 0) {
                 newVelocity.z += speed * std::sin(degrees);
                 newVelocity.x -= speed * std::cos(degrees);
@@ -103,7 +103,7 @@ void Player::processInput(GLuint deltaTime, glm::vec3 cameraFront) {
         }
     }
     else if(left) {
-        if(cameraFront.z < 0 && cameraFront.x > 0 || cameraFront.z > 0 && cameraFront.x < 0) {
+        if((cameraFront.z < 0 && cameraFront.x > 0) || (cameraFront.z > 0 && cameraFront.x < 0)) {
             if(cameraFront.z > 0) {
                 newVelocity.z += speed * std::sin(degrees);
                 newVelocity.x += speed * std::cos(degrees);
@@ -113,7 +113,7 @@ void Player::processInput(GLuint deltaTime, glm::vec3 cameraFront) {
             }
         }
 
-        if(cameraFront.z > 0 && cameraFront.x > 0 || cameraFront.z < 0 && cameraFront.x < 0) {
+        if((cameraFront.z > 0 && cameraFront.x > 0) || (cameraFront.z < 0 && cameraFront.x < 0)) {
             if(cameraFront.z > 0) {
                 newVelocity.z -= speed * std::sin(degrees);
                 newVelocity.x += speed * std::cos(degrees);

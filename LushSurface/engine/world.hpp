@@ -2,7 +2,7 @@
 #define WORLD_H
 
 #include "../pch.hpp"
-#include "simplexnoise.hpp"
+#include "generator.hpp"
 #include "entity.hpp"
 
 const uint16_t chunkSize = 64;
@@ -24,7 +24,7 @@ struct TerrainColumn {
 
 class Chunk{
 public:
-    Chunk(SimplexNoise *Generator);
+    Chunk(unsigned int seed);
     ~Chunk();
 
     void initialize(int32_t x, int32_t y, btDiscreteDynamicsWorld *dynamicsWorld);
@@ -44,6 +44,7 @@ private:
     void generateChunkv3();
     void generateChunkv4();
     void generateChunkv5();
+    void generateChunkv6();
 
     void fillVertexes();
 
@@ -61,7 +62,8 @@ private:
     GLuint VAO = 0, VBO = 0;
     GLint pointCount = 0;
     bool loaded = false;
-    SimplexNoise *generator = NULL;
+
+    unsigned int seed;
 };
 
 class World{
@@ -85,7 +87,6 @@ public:
 
 private:
     std::vector<Chunk*> chunks;
-    SimplexNoise *generator = NULL;
 
     std::vector<Entity*> entities;
 

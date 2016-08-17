@@ -1,6 +1,8 @@
 #ifndef SIMPLEXNOISE_H
 #define SIMPLEXNOISE_H
 
+#include "../pch.hpp"
+
 class SimplexNoise {
 public:
     SimplexNoise();
@@ -10,6 +12,11 @@ public:
 
     float raw_noise_2d( const float x, const float y );
     float scaled_raw_noise_2d( const float loBound, const float hiBound, const float x, const float y );
+
+    float scaled_raw_noise_2d( const float loBound, const float hiBound, const glm::vec2 coord);
+    float raw_noise_2d( const glm::vec2 coord );
+
+    float flowNoise( const glm::vec2 &v, float angle );
 
 private:
     int fastfloor( const float x );

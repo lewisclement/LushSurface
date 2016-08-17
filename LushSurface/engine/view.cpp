@@ -153,7 +153,7 @@ void View::setOrtho() {
     double amount = std::max(viewportWidth, viewportHeight) / ORTHORATIO;
     float width = viewportWidth / amount;
     float height = viewportHeight / amount;
-    projection = glm::ortho(-width, width, -height, height, 0.1f, 100.0f);
+    projection = glm::ortho(-width, width, -height, height, -10.0f, 100.0f);
 
     cameraFront = cameraTurn = glm::vec3(3.0f, -3.0f, 3.0f);
 }
@@ -186,4 +186,8 @@ void View::turnRight() {
 
 void View::setBirdseye() {
     projection = glm::perspective(45.0f, (GLfloat)viewportWidth / viewportHeight, 0.1f, 1000.0f);
+}
+
+glm::vec3 View::getFocusPoint() {
+    return glm::vec3(focus->x, focus->y, focus->z);
 }

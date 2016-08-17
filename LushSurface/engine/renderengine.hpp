@@ -37,6 +37,9 @@ private:
     bool initializeGL();
     bool initializeScene();
 
+    void drawLampShader(View* view);
+    void drawLightingShader(View* view);
+
     SDL_Window* screen;
     SDL_GLContext glcontext;
 

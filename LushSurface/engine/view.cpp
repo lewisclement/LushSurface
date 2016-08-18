@@ -98,7 +98,8 @@ void View::updateCameraPos(GLuint deltaTime) {
             if(cameraFront != cameraTurn) {
                 updateTick += deltaTime;
                 if(updateTick > VIEWUPDATETICK) {
-                    cameraFront = (cameraFront + cameraTurn) * 0.5f;
+                    cameraFront.x = (cameraFront.x + cameraTurn.x) * 0.5f;
+                    cameraFront.z = (cameraFront.z + cameraTurn.z) * 0.5f;
                     updateTick -= VIEWUPDATETICK;
                 }
             }
@@ -161,27 +162,37 @@ void View::setOrtho() {
 void View::turnLeft() {
     if(!(currentProjection == strategic)) return;
 
-    if(cameraFront.x > 0 && cameraFront.z > 0)
-        cameraTurn = glm::vec3(-3.0f, -3.0f, 3.0f);
-    else if(cameraFront.x < 0 && cameraFront.z > 0)
-        cameraTurn = glm::vec3(-3.0f, -3.0f, -3.0f);
-    else if(cameraFront.x < 0 && cameraFront.z < 0)
-        cameraTurn = glm::vec3(3.0f, -3.0f, -3.0f);
-    else
-        cameraTurn = glm::vec3(3.0f, -3.0f, 3.0f);
+    if(cameraFront.x > 0 && cameraFront.z > 0) {
+        cameraTurn.x = -3.0f;
+        cameraTurn.z = 3.0f;
+    } else if(cameraFront.x < 0 && cameraFront.z > 0) {
+        cameraTurn.x = -3.0f;
+        cameraTurn.z = -3.0f;
+    } else if(cameraFront.x < 0 && cameraFront.z < 0) {
+        cameraTurn.x = 3.0f;
+        cameraTurn.z = -3.0f;
+    } else {
+        cameraTurn.x = 3.0f;
+        cameraTurn.z = 3.0f;
+    }
 }
 
 void View::turnRight() {
     if(!(currentProjection == strategic)) return;
 
-    if(cameraFront.x > 0 && cameraFront.z > 0)
-        cameraTurn = glm::vec3(3.0f, -3.0f, -3.0f);
-    else if(cameraFront.x > 0 && cameraFront.z < 0)
-        cameraTurn = glm::vec3(-3.0f, -3.0f, -3.0f);
-    else if(cameraFront.x < 0 && cameraFront.z < 0)
-        cameraTurn = glm::vec3(-3.0f, -3.0f, 3.0f);
-    else
-        cameraTurn = glm::vec3(3.0f, -3.0f, 3.0f);
+    if(cameraFront.x > 0 && cameraFront.z > 0) {
+        cameraTurn.x = 3.0f;
+        cameraTurn.z = -3.0f;
+    } else if(cameraFront.x > 0 && cameraFront.z < 0) {
+        cameraTurn.x = -3.0f;
+        cameraTurn.z = -3.0f;
+    } else if(cameraFront.x < 0 && cameraFront.z < 0) {
+        cameraTurn.x = -3.0f;
+        cameraTurn.z = 3.0f;
+    } else {
+        cameraTurn.x = 3.0f;
+        cameraTurn.z = 3.0f;
+    }
 }
 
 void View::setBirdseye() {

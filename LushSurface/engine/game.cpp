@@ -14,8 +14,6 @@ struct ContactSensorCallback : public btCollisionWorld::ContactResultCallback {
 
 Game::Game() {
     views.push_back(new View(MINRESX, MINRESY));
-    glm::vec3 cameraPos = views[0]->getCameraPos();
-    world = new World(cameraPos.x - chunkSize / 2, cameraPos.z + chunkSize / 2);
 
     player = new Player(0);
     views[0]->setFocusPoint(player->getLocation());
@@ -24,6 +22,9 @@ Game::Game() {
     startLocation.y = player->getLocation()->y + 25;
     startLocation.z = player->getLocation()->z;
     player->setLocation(startLocation);
+
+    glm::vec3 cameraPos = views[0]->getCameraPos();
+    world = new World(startLocation.x, startLocation.z);
 
     world->addEntity((Entity*)player);
 }
@@ -42,8 +43,8 @@ bool Game::tick(GLuint deltaTime) {
     for(int i = 0; i < views.size(); i++)
         views[i]->updateCameraPos(deltaTime);
 
-    glm::vec3 cameraPos = views[0]->getCameraPos();
-    world->loadTerrain(cameraPos.x, cameraPos.z + chunkSize / 2);
+    glm::vec3* playerPos = player->getLocation();
+    world->loadTerrain(playerPos->x, playerPos->z);
 
     ContactSensorCallback callback(*player);
     world->dynamicsWorld->contactTest(player->rigidBody, callback);

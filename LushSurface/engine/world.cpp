@@ -39,6 +39,8 @@ World::World(float x, float y) {
         chunk->initialize(centerChunkX + i % 3 - 1, centerChunkY + int(i / 3) - 1, dynamicsWorld);
         chunks.push_back(chunk);
     }
+    focusChunkX = centerChunkX;
+    focusChunkY = centerChunkY;
 }
 
 World::~World() {

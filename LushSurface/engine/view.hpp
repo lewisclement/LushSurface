@@ -2,7 +2,6 @@
 #define VIEW_H
 
 #include "../pch.hpp"
-#include "../globals.hpp"
 
 class View {
 public:

@@ -97,10 +97,10 @@ void View::updateCameraPos(GLuint deltaTime) {
         if(currentProjection == strategic) {
             if(cameraFront != cameraTurn) {
                 updateTick += deltaTime;
-                if(updateTick > VIEWUPDATETICK) {
+                if(updateTick > settings.VIEWUPDATETICK) {
                     cameraFront.x = (cameraFront.x + cameraTurn.x) * 0.5f;
                     cameraFront.z = (cameraFront.z + cameraTurn.z) * 0.5f;
-                    updateTick -= VIEWUPDATETICK;
+                    updateTick -= settings.VIEWUPDATETICK;
                 }
             }
 
@@ -151,7 +151,7 @@ uint16_t View::getViewPortHeight() {
 }
 
 void View::setOrtho() {
-    double amount = std::max(viewportWidth, viewportHeight) / ORTHORATIO;
+    double amount = std::max(viewportWidth, viewportHeight) / settings.ORTHORATIO;
     float width = viewportWidth / amount;
     float height = viewportHeight / amount;
     projection = glm::ortho(-width, width, -height, height, -10.0f, 100.0f);

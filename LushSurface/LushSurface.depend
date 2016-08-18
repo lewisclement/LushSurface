@@ -1402,19 +1402,17 @@
 	"renderengine.hpp"
 	"../settings.hpp"
 
-1471536721 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/renderengine.hpp
+1471541998 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/renderengine.hpp
 	"../pch.hpp"
 	"shader.hpp"
 	"world.hpp"
 	"view.hpp"
-	"../globals.hpp"
 
 1455459688 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/shader.hpp
 	"../pch.hpp"
 
-1471536526 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/view.hpp
+1471541958 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/view.hpp
 	"../pch.hpp"
-	"../globals.hpp"
 
 1455459688 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/shader.cpp
 	"shader.hpp"
@@ -1423,7 +1421,7 @@
 	"../pch.hpp"
 	"simplexnoise.hpp"
 
-1471536534 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/view.cpp
+1471542005 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/view.cpp
 	"view.hpp"
 
 1471526640 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/world.cpp
@@ -1981,7 +1979,7 @@
 	"view.hpp"
 	"entities/player.hpp"
 
-1471540828 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/game.cpp
+1471541116 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/game.cpp
 	"game.hpp"
 
 1471540185 /home/lewis/Documents/Programming/LushSurface/LushSurface/globals.hpp

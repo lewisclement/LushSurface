@@ -5,13 +5,12 @@
 #include "shader.hpp"
 #include "world.hpp"
 #include "view.hpp"
-#include "../globals.hpp"
 
 #pragma clang diagnostic ignored "-Wpadded"
 
 class RenderEngine{
 public:
-    bool initialize(GLuint width = MINRESX, GLuint height = MINRESY);
+    bool initialize(GLuint width = settings.MINRESX, GLuint height = settings.MINRESY);
 
     void render(GLuint deltaTime = 0, GLuint ticks = 0);
     void keyInput(SDL_KeyboardEvent key);
@@ -47,8 +46,8 @@ private:
 
     glm::vec3 lightPositions[4];
 
-    GLuint windowWidth = MINRESX;
-    GLuint windowHeight = MINRESY;
+    GLuint windowWidth = settings.MINRESX;
+    GLuint windowHeight = settings.MINRESY;
     GLuint* textures;
 
     GLuint VAO, lightVAO; //VAO's

@@ -549,7 +549,7 @@
 	"generator.hpp"
 	"entity.hpp"
 
-1471259456 /home/lewis/Documents/Programming/LushSurface/LushSurface/pch.hpp
+1471540772 /home/lewis/Documents/Programming/LushSurface/LushSurface/pch.hpp
 	<iostream>
 	<fstream>
 	<stdio.h>
@@ -569,6 +569,7 @@
 	"../glm/glm/gtc/matrix_inverse.hpp"
 	"../glm/glm/gtx/vector_angle.hpp"
 	"btBulletDynamicsCommon.h"
+	"settings.hpp"
 
 1451764591 /home/lewis/Documents/Programming/LushSurface/LushSurface/SDL2/SDL.h
 	"SDL_main.h"
@@ -1397,10 +1398,11 @@
 	"../pch.hpp"
 	"entity.hpp"
 
-1471437822 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/renderengine.cpp
+1471540662 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/renderengine.cpp
 	"renderengine.hpp"
+	"../settings.hpp"
 
-1471376045 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/renderengine.hpp
+1471536721 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/renderengine.hpp
 	"../pch.hpp"
 	"shader.hpp"
 	"world.hpp"
@@ -1410,7 +1412,7 @@
 1455459688 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/shader.hpp
 	"../pch.hpp"
 
-1471207105 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/view.hpp
+1471536526 /home/lewis/Documents/Programming/LushSurface/LushSurface/engine/view.hpp
 	"../pch.hpp"
 	"../globals.hpp"
 
@@ -1421,13 +1423,13 @@
 	"../pch.hpp"
 	"simplexnoise.hpp"
 
-1471525508 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/view.cpp
+1471536534 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/view.cpp
 	"view.hpp"
 
 1471526640 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/world.cpp
 	"world.hpp"
 
-1471187276 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/main.cpp
+1471540891 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/main.cpp
 	"pch.hpp"
 	"engine/game.hpp"
 	"engine/renderengine.hpp"
@@ -1979,10 +1981,10 @@
 	"view.hpp"
 	"entities/player.hpp"
 
-1471526410 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/game.cpp
+1471540828 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/game.cpp
 	"game.hpp"
 
-1471207579 /home/lewis/Documents/Programming/LushSurface/LushSurface/globals.hpp
+1471540185 /home/lewis/Documents/Programming/LushSurface/LushSurface/globals.hpp
 
 1468694849 /home/lewis/Documents/Programming/LushSurface/glm/glm/gtx/vector_angle.hpp
 	"../glm.hpp"
@@ -2083,4 +2085,6 @@
 
 1471462348 source:/home/lewis/Documents/Programming/LushSurface/LushSurface/engine/generator.cpp
 	"generator.hpp"
+
+1471540925 /home/lewis/Documents/Programming/LushSurface/LushSurface/settings.hpp
 

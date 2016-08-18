@@ -48,4 +48,8 @@
 
 #pragma clang diagnostic pop
 
+#include "settings.hpp"
+
+extern Settings settings;
+
 #endif

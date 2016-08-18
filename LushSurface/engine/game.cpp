@@ -13,7 +13,7 @@ struct ContactSensorCallback : public btCollisionWorld::ContactResultCallback {
 };
 
 Game::Game() {
-    views.push_back(new View(MINRESX, MINRESY));
+    views.push_back(new View(settings.WINDOWWIDTH, settings.WINDOWHEIGHT));
 
     player = new Player(0);
     views[0]->setFocusPoint(player->getLocation());
@@ -66,8 +66,8 @@ void Game::keyInput(SDL_KeyboardEvent key) {
     else if(k == SDLK_o) {
         if(key.type == SDL_KEYDOWN) {
             if(views.size() == 1) {
-                views[0]->setViewport(MINRESX/2, MINRESY);
-                views.push_back(new View(MINRESX/2, MINRESY, MINRESX/2, 0));
+                views[0]->setViewport(settings.WINDOWWIDTH/2, settings.WINDOWHEIGHT);
+                views.push_back(new View(settings.WINDOWWIDTH/2, settings.WINDOWHEIGHT, settings.WINDOWWIDTH/2, 0));
                 views[1]->setFocusPoint(player->getLocation());
                 views[1]->setProjection(View::strategic);
                 views[1]->mouseInput(800, 200);
@@ -75,7 +75,7 @@ void Game::keyInput(SDL_KeyboardEvent key) {
             else if (views.size() > 1) {
                 delete views[1];
                 views.pop_back();
-                views[0]->setViewport(MINRESX, MINRESY);
+                views[0]->setViewport(settings.WINDOWWIDTH, settings.WINDOWHEIGHT);
             }
         }
     }

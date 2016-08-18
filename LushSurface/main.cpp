@@ -11,6 +11,7 @@ static RenderEngine* renderer;
 static Game* game;
 static GLulong frameCount = 0;
 static GLuint frameRate = 60;
+Settings settings;
 
 int main() {
     renderer = new RenderEngine();

@@ -1,4 +1,7 @@
 #include "renderengine.hpp"
+#include "../settings.hpp"
+
+extern Settings settings;
 
 bool RenderEngine::initialize(GLuint width, GLuint height) {
     windowWidth = width;
@@ -38,11 +41,11 @@ bool RenderEngine::initializeGL() {
         std::cout << "Could not enable double buffering: " << bufferError << ":" << bufferDepthError << std::endl;
     }
 
-    screen = SDL_CreateWindow ("LushSurface Milestone 1 dev",
+    screen = SDL_CreateWindow ("LushSurface Milestone 2 dev",
                           SDL_WINDOWPOS_CENTERED,
                           SDL_WINDOWPOS_CENTERED,
-                          (int)windowWidth, (int)windowHeight,
-                          // SDL_WINDOW_FULLSCREEN |
+                          settings.WINDOWWIDTH, settings.WINDOWHEIGHT,
+                          //SDL_WINDOW_FULLSCREEN |
                           SDL_WINDOW_OPENGL);
     if (screen == NULL) {
         std::cout << "Unable to create OpenGL 3.3 window: "<< SDL_GetError () << std::endl;

@@ -51,9 +51,10 @@ out vec4 color;
 
 in vec3 fragPosition;
 in vec3 Normal;
-in vec2 TexCoords;
+in float focusDistance;
 
 uniform vec3 viewPosition;
+uniform vec3 focusPosition;
 
 vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
@@ -72,7 +73,20 @@ void main()
     }*/
     //result += CalcSpotLight(spot, norm, viewPosition, viewDirection);
 
-    color = vec4(result, 1.0f);
+    float alpha = 1.0f;
+    float xdiff1 = fragPosition.x - focusPosition.x;
+    float xdiff2 = fragPosition.x - viewPosition.x;
+    float zdiff1 = fragPosition.z - focusPosition.z;
+    float zdiff2 = fragPosition.z - viewPosition.z;
+
+    if((xdiff1 < 0 && xdiff2 > 0 || xdiff1 > 0 && xdiff2 < 0) && (zdiff1 < 0 && zdiff2 > 0 || zdiff1 > 0 && zdiff2 < 0))
+        if(focusDistance < 0)  color.g = 0.9f;
+
+    result.x -= min(focusDistance * 0.01f, 0.15f);
+    result.y -= min(focusDistance * 0.01f, 0.15f);
+    result.z -= min(focusDistance * 0.01f, 0.15f);
+
+    color = vec4(result, alpha);
 }
 
 vec3 CalcDirLight(DirectionalLight light, vec3 normal, vec3 viewDir) {

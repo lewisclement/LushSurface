@@ -5,11 +5,13 @@ set(SOURCES
     main.cpp
     geometry.cpp
 
+    engine/game.cpp
     engine/chunk.cpp
     engine/entity.cpp
     engine/entityset.cpp
     engine/renderengine.cpp
     engine/shader.cpp
+    engine/simplex.cpp
     engine/simplexnoise.cpp
     engine/view.cpp
     engine/world.cpp
@@ -19,14 +21,17 @@ set(SOURCES
 
 set(HEADERS
     pch.hpp
+    settings.hpp
 
     geometry.hpp
 
+    engine/game.hpp
     engine/chunk.hpp
     engine/entity.hpp
     engine/entityset.hpp
     engine/renderengine.hpp
     engine/shader.hpp
+    engine/simplex.hpp
     engine/simplexnoise.hpp
     engine/view.hpp
     engine/world.hpp
@@ -74,6 +79,7 @@ if(MSVC)
 elseif(MINGW)
 	Message(FATAL_ERROR "MinGW not supported right now!")
 endif()
+set(BULLET_ROOT "${PROJECT_SOURCE_DIR}/bullet3/")
 
 
 find_package(OpenGL REQUIRED)
@@ -129,3 +135,4 @@ endforeach()
 
 add_definitions(-DOPENGLES_VERSION_MAJOR=3)
 add_definitions(-DOPENGLES_VERSION_MINOR=3)
+

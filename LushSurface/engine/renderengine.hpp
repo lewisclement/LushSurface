@@ -8,44 +8,46 @@
 
 #pragma clang diagnostic ignored "-Wpadded"
 
-#define MIN_WIDTH 1280
-#define MIN_HEIGHT 720
-
 class RenderEngine{
 public:
-    bool initialize(GLuint width = MIN_WIDTH, GLuint height = MIN_HEIGHT);
+    bool initialize(GLuint width = settings.MINRESX, GLuint height = settings.MINRESY);
 
     void render(GLuint deltaTime = 0, GLuint ticks = 0);
-    void mouseInput(GLint relX, GLint relY);
     void keyInput(SDL_KeyboardEvent key);
     void processInput(GLuint deltaTime);
 
-    View getView();
 
-    World * getWorld(); ////Temporary
+    void addChunk(Chunk* chunk);
+    void addView(View* view);
+
+    void removeView(View* view);
+
+    void setPlayer(glm::vec3 pos);
 
     RenderEngine();
     ~RenderEngine();
 
     SDL_Keysym lastKey;
 
-    View *view;
-
     //Temporary
-    glm::vec3 lightPositions[4];
+
 
 private:
     bool initializeGL();
     bool initializeScene();
 
+    void drawLampShader(View* view);
+    void drawLightingShader(View* view);
+
     SDL_Window* screen;
     SDL_GLContext glcontext;
 
     Shader *lightingShader, *lampShader;
-    World *world;
 
-    GLuint windowWidth = MIN_WIDTH;
-    GLuint windowHeight = MIN_HEIGHT;
+    glm::vec3 lightPositions[4];
+
+    GLuint windowWidth = settings.MINRESX;
+    GLuint windowHeight = settings.MINRESY;
     GLuint* textures;
 
     GLuint VAO, lightVAO; //VAO's
@@ -53,6 +55,9 @@ private:
 
     glm::mat4 trans;
     glm::mat4 model;
+
+    std::vector<Chunk*> chunks;
+    std::vector<View*> views;
 };
 
 #endif // RENDERENGINE_H

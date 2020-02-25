@@ -8,15 +8,17 @@ uniform mat3 normalModel;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform vec3 focusPosition;
+
 out vec3 fragPosition;
 out vec3 Normal;
-out vec2 TexCoords;
+out float focusDistance;
 
 void main()
 {
-    TexCoords = texCoord;
-
     gl_Position = projection * view * model * vec4(position, 1.0f);
     fragPosition = vec3(model * vec4(position, 1.0f));
     Normal = normalModel * normal;
+
+    focusDistance = focusPosition.y - position.y;
 }

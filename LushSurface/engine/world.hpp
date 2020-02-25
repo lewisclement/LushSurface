@@ -2,7 +2,8 @@
 #define WORLD_H
 
 #include "../pch.hpp"
-#include "simplexnoise.hpp"
+#include "generator.hpp"
+#include "entity.hpp"
 
 const uint16_t chunkSize = 64;
 const uint8_t loadedWorldSize = 3; //3*3 = 9
@@ -23,10 +24,10 @@ struct TerrainColumn {
 
 class Chunk{
 public:
-    Chunk(SimplexNoise *Generator);
+    Chunk(unsigned int seed);
     ~Chunk();
 
-    void initialize(int32_t x, int32_t y);
+    void initialize(int32_t x, int32_t y, btDiscreteDynamicsWorld *dynamicsWorld);
 
     void bindVBO();
 
@@ -40,6 +41,10 @@ public:
 private:
     void generateChunkv1();
     void generateChunkv2();
+    void generateChunkv3();
+    void generateChunkv4();
+    void generateChunkv5();
+    void generateChunkv6();
 
     void fillVertexes();
 
@@ -50,16 +55,24 @@ private:
     std::vector<GLfloat> vertices;
     std::vector<uint16_t> blockHeights;
 
+    btTriangleMesh* mesh;
+    btCollisionShape* collisionShape;
+    btRigidBody* rigidBody;
+
     GLuint VAO = 0, VBO = 0;
     GLint pointCount = 0;
     bool loaded = false;
-    SimplexNoise *generator = NULL;
+
+    unsigned int seed;
 };
 
 class World{
 public:
     World(float x, float y);
     ~World();
+
+    void addEntity(Entity* entity);
+    void processPhysics(GLuint deltaTime);
 
     bool loadTerrain(float x, float y);
 
@@ -68,10 +81,19 @@ public:
     Chunk* getChunk(int32_t x, int32_t y);
     std::vector<Coordinate> getChunkCoordinates();
     TerrainColumn getTerrain(int32_t x, int32_t y);
+    std::vector<Chunk*> getChunks();
+
+    btDiscreteDynamicsWorld* dynamicsWorld;
 
 private:
     std::vector<Chunk*> chunks;
-    SimplexNoise *generator = NULL;
+
+    std::vector<Entity*> entities;
+
+    btBroadphaseInterface* broadphase;
+    btDefaultCollisionConfiguration* collisionConfiguration;
+    btCollisionDispatcher* dispatcher;
+    btSequentialImpulseConstraintSolver* solver;
 };
 
 #endif // WORLD_H

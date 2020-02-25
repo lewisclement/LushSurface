@@ -9,11 +9,17 @@ public:
     ~Entity();
 
     void setLocation(glm::vec3 Location);
+    void actualize();
+
+    btRigidBody* getRigidBody();
 
     glm::vec3 * getLocation();
 
+    btRigidBody* rigidBody;
+
 private:
     unsigned long ID = 0;
+    btCollisionShape* shape;
 
 protected:
     glm::vec3 *location;

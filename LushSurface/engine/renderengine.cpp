@@ -1,10 +1,11 @@
 #include "renderengine.hpp"
+#include "../settings.hpp"
+
+extern Settings settings;
 
 bool RenderEngine::initialize(GLuint width, GLuint height) {
     windowWidth = width;
     windowHeight = height;
-
-    view = new View();
 
     if(!initializeGL()) {
         std::cout << "Could not initialize OpenGL window" << std::endl;
@@ -40,11 +41,11 @@ bool RenderEngine::initializeGL() {
         std::cout << "Could not enable double buffering: " << bufferError << ":" << bufferDepthError << std::endl;
     }
 
-    screen = SDL_CreateWindow ("LushSurface Milestone 1 dev",
+    screen = SDL_CreateWindow ("LushSurface Milestone 2 dev",
                           SDL_WINDOWPOS_CENTERED,
                           SDL_WINDOWPOS_CENTERED,
-                          (int)windowWidth, (int)windowHeight,
-                          // SDL_WINDOW_FULLSCREEN |
+                          settings.WINDOWWIDTH, settings.WINDOWHEIGHT,
+                          //SDL_WINDOW_FULLSCREEN |
                           SDL_WINDOW_OPENGL);
     if (screen == NULL) {
         std::cout << "Unable to create OpenGL 3.3 window: "<< SDL_GetError () << std::endl;
@@ -65,6 +66,9 @@ bool RenderEngine::initializeGL() {
     }
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    //glEnable(GL_CULL_FACE);
+    //glBlendFunc(GL_ONE, GL_ONE);
 
     SDL_GL_SetSwapInterval(1);
     SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -119,9 +123,7 @@ bool RenderEngine::initializeScene() {
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    //glGenBuffers(1, &EBO);
-    glm::vec3 cameraPos = view->getCameraPos();
-    world = new World(cameraPos.x - chunkSize / 2, cameraPos.z + chunkSize / 2);
+
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -154,66 +156,86 @@ bool RenderEngine::initializeScene() {
     return true;
 }
 
-void RenderEngine::mouseInput(GLint relX, GLint relY) {
-    //For testing purposes
-
-    if(!(SDL_GetWindowFlags(screen) & SDL_WINDOW_MOUSE_FOCUS)) return;
-
-    view->setYaw(view->getYaw() + relX / 10.0f);
-    view->setPitch(view->getPitch() + -relY / 10.0f);
-
-    GLfloat yaw = view->getYaw();
-    GLfloat pitch = view->getPitch();
-
-    if(pitch > 89.0f) {view->setPitch(89.0f);}
-    else if(pitch < -89.0f) {view->setPitch(-89.0f);}
-
-    glm::vec3 front;
-    front.x = float(cos(glm::radians(yaw)) * cos(glm::radians(pitch)));
-    front.y = float(sin(glm::radians(pitch)));
-    front.z = float(sin(glm::radians(yaw)) * cos(glm::radians(pitch)));
-    view->setCameraFront(glm::normalize(front));
+void RenderEngine::addView(View* view) {
+    views.push_back(view);
 }
 
-void RenderEngine::keyInput(SDL_KeyboardEvent key) {
-    SDL_Keycode k = key.keysym.sym;
-    if(k == SDLK_p) {
-        if(key.type == SDL_KEYDOWN) {
-            View::Projection current = view->getProjectionType();
-            if(current == View::birdseye)
-                view->setProjection(View::strategic);
-            else if (current == View::strategic)
-                view->setProjection(View::birdseye);
-        }
-    }
+void RenderEngine::removeView(View* view) {
+    views.erase(std::remove(views.begin(), views.end(), view), views.end());
 }
 
-void RenderEngine::processInput(GLuint deltaTime) {
-    glm::vec3 cameraPos = view->getCameraPos();
-    world->loadTerrain(cameraPos.x, cameraPos.z + chunkSize / 2);
+void RenderEngine::setPlayer(glm::vec3 pos) {
+    lightPositions[0] = pos;
+}
+
+void RenderEngine::addChunk(Chunk* chunk) {
+    chunks.push_back(chunk);
 }
 
 void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
-    processInput(deltaTime);
-
     glClearColor(0.8f, 0.85f, 0.95f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    for(std::vector<View*>::iterator view = views.begin(); view != views.end(); view++) {
+        glViewport((*view)->getViewPortX(), (*view)->getViewPortY(), (*view)->getViewPortWidth(), (*view)->getViewPortHeight());
+
+        drawLampShader((*view));
+        drawLightingShader((*view));
+    }
+
+    SDL_GL_SwapWindow(screen);
+
+    //Cleanup
+    chunks.clear();
+    views.clear();
+}
+
+RenderEngine::RenderEngine() {
+}
+
+RenderEngine::~RenderEngine() {
+    delete[] textures;
+    delete lightingShader;
+    delete lampShader;
+}
+
+void RenderEngine::drawLampShader(View* view) {
+    lampShader->activate();
+    GLint viewLocation = glGetUniformLocation(lampShader->programID, "view");
+    GLint projectionLocation = glGetUniformLocation(lampShader->programID, "projection");
+    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view->getViewMatrix()));
+    glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(view->getProjectionMatrix()));
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    glBindVertexArray(lightVAO);
+    for(int i = 0; i < 4; i++) {
+        GLint modelLocation = glGetUniformLocation(lampShader->programID, "model");
+
+        model = glm::mat4();
+        model = glm::translate(model, glm::vec3(lightPositions[i].x, lightPositions[i].y, lightPositions[i].z));
+        model = glm::scale(model, glm::vec3(0.2f));
+        glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    }
+    glBindVertexArray(0);
+}
+
+void RenderEngine::drawLightingShader(View* view) {
     lightingShader->activate();
 
-    //glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(GL_TEXTURE_2D, textures[0]);
-
-    //glm::vec3 lightPos = glm::vec3(1.2f, 1.0f, fmod(ticks / 100.0f, 50.0f) - 40.0f);
-    lightPositions[1] = glm::vec3(cos(ticks / 300.0f) * 15 + 5, 1.0f, sin(ticks / 500.0f) * 15 - 15);
-    lightPositions[2] = glm::vec3(cos(ticks / 500.0f) * 15 + 5, 1.0f, sin(ticks / 300.0f) * 15 - 15);
-    lightPositions[3] = glm::vec3(cos(ticks / 200.0f) * 15 + 5, 1.0f, sin(ticks / 200.0f) * 15 - 15);
+    lightPositions[1] = glm::vec3(0, 0, 0);
+    lightPositions[2] = glm::vec3(0, 0, 0);
+    lightPositions[3] = glm::vec3(0, 0, 0);
 
     GLint matDiffuseLoc = glGetUniformLocation(lightingShader->programID, "material.diffuse");
     GLint matSpecularLoc = glGetUniformLocation(lightingShader->programID, "material.specular");
     GLint matShineLoc = glGetUniformLocation(lightingShader->programID, "material.shininess");
 
-    glUniform3f(matDiffuseLoc, 1.0f, 0.8f, 0.8f);
+    glUniform3f(matDiffuseLoc, 0.9f, 0.8f, 0.6f);
     glUniform3f(matSpecularLoc, 0.5f, 0.5f, 0.5f);
     glUniform1f(matShineLoc, 32.0f);
 
@@ -277,6 +299,9 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
     glUniform1f(glGetUniformLocation(lightingShader->programID, "light.linear"),    0.045f);
     glUniform1f(glGetUniformLocation(lightingShader->programID, "light.quadratic"), 0.0075f);
 
+    glm::vec3 focus = view->getFocusPoint();
+    glUniform3f(glGetUniformLocation(lightingShader->programID, "focusPosition"), focus.x, focus.y, focus.z);
+
     GLint viewPosLoc = glGetUniformLocation(lightingShader->programID, "viewPosition");
 
     glUniform3f(viewPosLoc, cameraPos.x, cameraPos.y, cameraPos.z);
@@ -290,62 +315,27 @@ void RenderEngine::render(GLuint deltaTime, GLuint ticks) {
 
     glBindVertexArray(VAO);
 
-    std::vector<Coordinate> coords = world->getChunkCoordinates();
+    std::vector<Coordinate> coords;
+    for(unsigned long i = 0; i < chunks.size(); i++) {
+        coords.push_back(chunks[i]->getPosition());
+    }
 
-    for(unsigned long chunk = 0; chunk < coords.size(); chunk++) {
-        model = glm::translate(glm::mat4(), glm::vec3(coords[chunk].x * chunkSize, 0.0f, coords[chunk].y * chunkSize));
+    for(unsigned long i = 0; i < coords.size(); i++) {
+        model = glm::translate(glm::mat4(), glm::vec3(coords[i].x * chunkSize, 0.0f, coords[i].y * chunkSize));
         glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
         glm::mat3 normalModel = glm::inverseTranspose(glm::mat3(model));
         glUniformMatrix3fv(normalModelLocation, 1, GL_FALSE, glm::value_ptr(normalModel));
 
-        Chunk *c = world->getChunk(coords[chunk].x, coords[chunk].y);
+        Chunk *c = NULL;
+        for(unsigned long j = 0; j < chunks.size(); j++) {
+            Coordinate pos = chunks[j]->getPosition();
+            if(pos.x == coords[i].x && pos.y == coords[i].y) {c = chunks[i]; break;}
+        }
+
         c->bindVBO();
         glDrawArrays(GL_TRIANGLES, 0, c->getTriangleCount());
     }
 
 
     glBindVertexArray(0);
-
-    lampShader->activate();
-    viewLocation = glGetUniformLocation(lampShader->programID, "view");
-    projectionLocation = glGetUniformLocation(lampShader->programID, "projection");
-    glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(view->getViewMatrix()));
-    glUniformMatrix4fv(projectionLocation, 1, GL_FALSE, glm::value_ptr(view->getProjectionMatrix()));
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-    glBindVertexArray(lightVAO);
-    for(int i = 0; i < 4; i++) {
-        modelLocation = glGetUniformLocation(lampShader->programID, "model");
-
-        model = glm::mat4();
-        model = glm::translate(model, glm::vec3(lightPositions[i].x, lightPositions[i].y, lightPositions[i].z));
-        model = glm::scale(model, glm::vec3(0.2f));
-        glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
-
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-
-    }
-    glBindVertexArray(0);
-
-    SDL_GL_SwapWindow(screen);
-}
-
-View RenderEngine::getView() {
-    return *view;
-}
-
-RenderEngine::RenderEngine() {
-}
-
-RenderEngine::~RenderEngine() {
-    delete[] textures;
-    delete world;
-    delete view;
-    delete lightingShader;
-    delete lampShader;
-}
-
-World * RenderEngine::getWorld() {
-    return world;
 }

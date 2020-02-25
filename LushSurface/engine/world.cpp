@@ -15,17 +15,32 @@ TerrainColumn::TerrainColumn(uint16_t Bottom, uint16_t Top) {
 }
 
 World::World(float x, float y) {
+    // Build the broadphase
+    broadphase = new btDbvtBroadphase();
+
+    // Set up the collision configuration and dispatcher
+    collisionConfiguration = new btDefaultCollisionConfiguration();
+    dispatcher = new btCollisionDispatcher(collisionConfiguration);
+
+    // The actual physics solver
+    solver = new btSequentialImpulseConstraintSolver;
+
+    // The world.
+    dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+    dynamicsWorld->setGravity(btVector3(0, -30, 0));
+
+
+
     int32_t centerChunkX = int32_t(x / chunkSize);
     int32_t centerChunkY = int32_t(y / chunkSize);
 
-    generator = new SimplexNoise();
-    generator->setSeed(34142345);
-
     for(int i = 0; i < loadedWorldSize * loadedWorldSize; i++) {
-        Chunk *chunk = new Chunk(generator);
-        chunk->initialize(centerChunkX + i % 3 - 1, centerChunkY + int(i / 3) - 1);
+        Chunk *chunk = new Chunk(34142345);
+        chunk->initialize(centerChunkX + i % 3 - 1, centerChunkY + int(i / 3) - 1, dynamicsWorld);
         chunks.push_back(chunk);
     }
+    focusChunkX = centerChunkX;
+    focusChunkY = centerChunkY;
 }
 
 World::~World() {
@@ -33,7 +48,24 @@ World::~World() {
         delete chunks[i];
     }
 
-    delete generator;
+    delete dynamicsWorld;
+    delete solver;
+    delete dispatcher;
+    delete collisionConfiguration;
+    delete broadphase;
+}
+
+void World::addEntity(Entity* entity) {
+    entities.push_back(entity);
+    dynamicsWorld->addRigidBody(entity->getRigidBody());
+}
+
+void World::processPhysics(GLuint deltaTime) {
+    dynamicsWorld->stepSimulation(deltaTime, 10, 1./1000.0);
+
+    for(int i = 0; i < entities.size(); i++) {
+        entities[i]->actualize();
+    }
 }
 
 bool World::loadTerrain(float x, float y) {
@@ -49,44 +81,44 @@ bool World::loadTerrain(float x, float y) {
 
         if(xDir == 0 && yDir != 0) {
             Chunk *chunk = getChunk(focusChunkX, focusChunkY - yDir);
-            chunk->initialize(newFocusChunkX, newFocusChunkY + yDir);
+            chunk->initialize(newFocusChunkX, newFocusChunkY + yDir, dynamicsWorld);
 
             chunk = getChunk(focusChunkX - 1, focusChunkY - yDir);
-            chunk->initialize(newFocusChunkX - 1, newFocusChunkY + yDir);
+            chunk->initialize(newFocusChunkX - 1, newFocusChunkY + yDir, dynamicsWorld);
 
             chunk = getChunk(focusChunkX + 1, focusChunkY - yDir);
-            chunk->initialize(newFocusChunkX + 1, newFocusChunkY + yDir);
+            chunk->initialize(newFocusChunkX + 1, newFocusChunkY + yDir, dynamicsWorld);
         } else if(xDir != 0 && yDir == 0) {
             Chunk *chunk = getChunk(focusChunkX - xDir, focusChunkY);
-            chunk->initialize(newFocusChunkX + xDir, newFocusChunkY);
+            chunk->initialize(newFocusChunkX + xDir, newFocusChunkY, dynamicsWorld);
 
             chunk = getChunk(focusChunkX - xDir, focusChunkY - 1);
-            chunk->initialize(newFocusChunkX + xDir, newFocusChunkY - 1);
+            chunk->initialize(newFocusChunkX + xDir, newFocusChunkY - 1, dynamicsWorld);
 
             chunk = getChunk(focusChunkX - xDir, focusChunkY + 1);
-            chunk->initialize(newFocusChunkX + xDir, newFocusChunkY + 1);
+            chunk->initialize(newFocusChunkX + xDir, newFocusChunkY + 1, dynamicsWorld);
         } else {
             Chunk *chunk = getChunk(focusChunkX - xDir, focusChunkY - yDir);
-            chunk->initialize(newFocusChunkX + xDir, newFocusChunkY + yDir);
+            chunk->initialize(newFocusChunkX + xDir, newFocusChunkY + yDir, dynamicsWorld);
 
             chunk = getChunk(focusChunkX, focusChunkY - yDir);
-            chunk->initialize(newFocusChunkX, newFocusChunkY + yDir);
+            chunk->initialize(newFocusChunkX, newFocusChunkY + yDir, dynamicsWorld);
 
             chunk = getChunk(focusChunkX - xDir, focusChunkY);
-            chunk->initialize(newFocusChunkX + xDir, newFocusChunkY);
+            chunk->initialize(newFocusChunkX + xDir, newFocusChunkY, dynamicsWorld);
 
             if(xDir == yDir) {
                 chunk = getChunk(focusChunkX - xDir, focusChunkY + yDir);
-                chunk->initialize(newFocusChunkX - xDir, newFocusChunkY + yDir);
+                chunk->initialize(newFocusChunkX - xDir, newFocusChunkY + yDir, dynamicsWorld);
 
                 chunk = getChunk(focusChunkX + xDir, focusChunkY - yDir);
-                chunk->initialize(newFocusChunkX + xDir, newFocusChunkY - yDir);
+                chunk->initialize(newFocusChunkX + xDir, newFocusChunkY - yDir, dynamicsWorld);
             } else {
                 chunk = getChunk(focusChunkX - xDir, focusChunkY - yDir);
-                chunk->initialize(newFocusChunkX - xDir, newFocusChunkY - yDir);
+                chunk->initialize(newFocusChunkX - xDir, newFocusChunkY - yDir, dynamicsWorld);
 
                 chunk = getChunk(focusChunkX + xDir, focusChunkY + yDir);
-                chunk->initialize(newFocusChunkX + xDir, newFocusChunkY + yDir);
+                chunk->initialize(newFocusChunkX + xDir, newFocusChunkY + yDir, dynamicsWorld);
             }
         }
 
@@ -108,16 +140,6 @@ Chunk* World::getChunk(int32_t x, int32_t y) {
     return returnChunk;
 }
 
-std::vector<Coordinate> World::getChunkCoordinates() {
-    std::vector<Coordinate> coords;
-
-    for(unsigned long i = 0; i < chunks.size(); i++) {
-        coords.push_back(chunks[i]->getPosition());
-    }
-
-    return coords;
-}
-
 TerrainColumn World::getTerrain(int32_t x, int32_t y) {
     int32_t chunkX = int32_t(x / chunkSize);
     int32_t chunkY = int32_t(y / chunkSize);
@@ -135,4 +157,8 @@ TerrainColumn World::getTerrain(int32_t x, int32_t y) {
     }
 
     return getChunk(chunkX, chunkY)->getTerrain(relativeX, relativeY);
+}
+
+std::vector<Chunk*> World::getChunks() {
+    return chunks;
 }

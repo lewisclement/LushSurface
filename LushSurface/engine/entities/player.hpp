@@ -7,14 +7,14 @@
 
 class Player : public Entity {
 public:
-    explicit Player(unsigned long ID, World *TempWorld) : Entity(ID) {tempWorld = TempWorld;} ////TempWorld is temporary
+    explicit Player(unsigned long ID) : Entity(ID) {}
     ~Player();
 
-    void keyInput(SDL_KeyboardEvent key);
-    void processInput(GLuint deltaTime);
+    void activate();
+    void processInput(GLuint deltaTime, glm::vec3 cameraFront);
 
-private:
-    World *tempWorld; ////Temporary
+    void setMovement(short direction, bool movement);
+    void setCollision(bool collided);
 };
 
 #endif // PLAYER_H

@@ -1,1 +1,1 @@
-Implementation of my game
+Tested on Ubuntu 18.04. Requires libglew-dev, libsdl2-dev and libbullet-dev installed. Should work on other OS's too, but you're on your own setting up glew, sdl2 and bullet here.

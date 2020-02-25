@@ -1,0 +1,3 @@
+/home/frederieke/Documents/repos/lushsurface/LushSurface/CMakeFiles/rebuild_cache.dir
+/home/frederieke/Documents/repos/lushsurface/LushSurface/CMakeFiles/LushSurface.dir
+/home/frederieke/Documents/repos/lushsurface/LushSurface/CMakeFiles/edit_cache.dir
